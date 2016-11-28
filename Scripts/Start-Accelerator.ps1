@@ -160,10 +160,6 @@ while ($true) {
         Write-Host "Running command '$($commandObject.Title)'..."
         Write-Host ""
 
-        if ($Interactive.IsPresent) {
-            Write-Host ""
-        }
-
         # if (-not($Interactive.IsPresent)) {
         #     Write-Progress -Activity "Command '$($commandObject.Title)'" -Status 'Running command...' -PercentComplete 30
         # }
