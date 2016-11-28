@@ -18,7 +18,7 @@ function Get-ChocoLatestVersion {
         $choco = 'C:\ProgramData\chocolatey\choco.exe'
     }
 
-    $listOutputExpr = '^' + [System.Text.RegularExpressions.Regex]::Escape($PackageId) + '\|(.*)$'
+    $listOutputExpr = "^(?:$([System.Text.RegularExpressions.Regex]::Escape($PackageId))\|(.*))`$"
 
     $listArguments = "list $PackageId --limit-output"
     if ($Source) {
@@ -26,18 +26,27 @@ function Get-ChocoLatestVersion {
     }
 
     Write-Verbose "Running ``choco $($listArguments)``..."
-    $listOutput = (Invoke-Application $choco -Arguments $listArguments -EnsureSuccess $true -ReturnType 'Output') -replace "`r`n", ' '
+    $listOutput = Invoke-Application $choco -Arguments $listArguments -EnsureSuccess $true -ReturnType 'Output'
 
     Write-Verbose "Output:"
     Write-Verbose $listOutput
 
-    if ($listOutput -match $listOutputExpr) {
-        Write-Verbose "Output matches list output expression."
-        return [Version]::Parse(($listOutput -replace $listOutputExpr, '$1'))
-    } else {
+    $latestVersion = $null
+
+    ($listOutput -split "`r`n") | foreach {
+        if ($_ -match $listOutputExpr) {
+            Write-Verbose "Output matches list output expression."
+            $versionText = $_ -replace $listOutputExpr, '$1'
+            $latestVersion = [Version]::Parse($versionText)
+        }
+    }
+
+	if (-not($latestVersion)) {
         Write-Verbose "Output did not match any expected format."
         Write-Error "Could not determine latest version of package '$($PackageId)'."
     }
+
+    return $latestVersion
 }
 
 function New-ChocoPackage {

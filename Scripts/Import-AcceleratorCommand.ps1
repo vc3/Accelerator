@@ -11,7 +11,9 @@ begin {
         $PSScriptRoot = Split-Path $script:MyInvocation.MyCommand.Path
     }
 
+    #ifdef TEST
     Import-Module "$($PSScriptRoot)\..\Modules\PowerYaml\PowerYaml.psd1"
+    #endif
 }
 
 process {

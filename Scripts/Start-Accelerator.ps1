@@ -1,95 +1,71 @@
+[CmdletBinding()]
+param(
+    [Parameter(Position=0)]
+    [string]$CommandName,
+
+    [switch]$Interactive,
+
+    [string]$WorkingDirectory,
+
+    [Alias('y')]
+    [Alias('yes')]
+    [switch]$Confirm,
+
+    [Hashtable]$CommandParameters,
+
+    [Hashtable]$UnboundParameters
+)
+
+if ($UnboundParameters.Keys.Count -gt 0) {
+    Write-Warning "Unbound Parameters:`r`n$(($UnboundParameters.Keys | foreach { (' ' * 11) + $_ + '=' + $UnboundParameters[$_] }) -join "`r`n")"
+}
+
 $PSModuleAutoloadingPreference = 'None'
 
 $ErrorActionPreference = 'Stop'
 $InformationPreference = 'Continue'
 
-$setPSScriptRoot = $false
-
-if (-not($PSScriptRoot)) {
-    $setPSScriptRoot = $true
+if (-not($PSScriptRoot) -or $PSScriptRoot -ne (Split-Path $script:MyInvocation.MyCommand.Path -Parent)) {
     Write-Verbose "Setting 'PSScriptRoot' variable since it isn't automatically set by the runtime..."
-    $PSScriptRoot = Split-Path $script:MyInvocation.MyCommand.Path
+    $PSScriptRoot = Split-Path $script:MyInvocation.MyCommand.Path -Parent
 }
 
-Import-Module "$($PSScriptRoot)\..\Accelerator.psd1"
-
-$positionalParameters = @('Command')
-
-Write-Verbose "Parsing parameters..."
-$parameterHash = $Args | .\ConvertTo-ParameterHash.ps1 -PositionalParameters $positionalParameters -ErrorAction Stop
-
-Write-Verbose "Parameters:`r`n$(($parameterHash.Keys | foreach { (' ' * 11) + (.\ConvertTo-RightPaddedString.ps1 $_ 20) + '=' + $parameterHash[$_] }) -join "`r`n")"
-
-if (-not($parameterHash['WorkingDirectory'])) {
-    $parameterHash['WorkingDirectory'] = $PWD.Path
-}
-
-$interactive = $parameterHash['Interactive']
-$useStart = $parameterHash['UseStart']
-$persistCredentials = $parameterHash['PersistCredentials']
-$windowTitle = $parameterHash['WindowTitle']
-
-if ($parameterHash['Command']) {
-    $command = $parameterHash['Command']
-    $parameterHash.Remove('Command')
-} elseif ($interactive) {
-    $command = $null
-} else {
+if (-not($CommandName) -and -not($Interactive.IsPresent)) {
     throw "A command must be specified when run in non-interactive mode."
 }
 
-if ($windowTitle) {
-    $host.ui.RawUI.WindowTitle = $windowTitle
-} elseif ($interactive) {
-    $host.ui.RawUI.WindowTitle = "Accelerator"
-}
-
-if (Test-Path "$($PSScriptRoot)\..\Accelerator.version") {
-    $version = (Get-Content "$($PSScriptRoot)\..\Accelerator.version").Trim()
-} elseif (Test-Path "$($PSScriptRoot)\..\Chocolatey\Accelerator.nuspec") {
-    $version = ([xml](Get-Content "$($PSScriptRoot)\..\Chocolatey\Accelerator.nuspec")).package.metadata.version.Trim()
+if (Test-Path "$($PSScriptRoot)\Accelerator.version") {
+    $version = (Get-Content "$($PSScriptRoot)\Accelerator.version").Trim()
+} elseif (Test-Path "$($PSScriptRoot)\..\Accelerator.nuspec") {
+    $version = ([xml](Get-Content "$($PSScriptRoot)\..\Accelerator.nuspec")).package.metadata.version.Trim()
 } else {
     $version = '???'
 }
 
 Write-Host "Accelerator v$($version)"
 
-# TODO: Import modules
-
-# TODO: Update formats
-
 $matchedCommandFile = $null
 $matchedCommandNames = @()
 
 $commands = [array](& "$($PSScriptRoot)\Get-AcceleratorCommand.ps1")
 
-if ($command) {
-    Write-Verbose "Attempting to match command '$($command)'..."
+if ($CommandName) {
+    Write-Verbose "Attempting to match command '$($CommandName)'..."
     $commandObjects = [array]($commands | where {
-        if (($_.Name -and $command -eq $_.Name) -or $_.Title -like $command) {
+        if (($_.Name -and $CommandName -eq $_.Name) -or $_.Title -like $CommandName) {
             Write-Verbose "Command '$($_.Title)' ($($_.Name)) matches!"
             return $true
         }
     })
 
     if ($commandObjects.Count -gt 1) {
-        Write-Error "Text '$($command)' matched multiple commands: $(($commandObjects | select -ExpandProperty Title) -join ', ')"
+        Write-Error "Text '$($CommandName)' matched multiple commands: $(($commandObjects | select -ExpandProperty Title) -join ', ')"
         return
     } elseif ($commandObjects.Count -eq 0) {
         Write-Host ""
-        Write-Warning "Unable to find command matching '$($command)'."
+        Write-Warning "Unable to find command matching '$($CommandName)'."
         Write-Host ""
     }
-}
-
-if (-not($commandObjects) -and $interactive) {
-    Write-Host "
-To get started, enter the number corresponding to one of the listed commands.
-
-Each command will...
-
-* Provide a description and prompt for confirmation before continuing.
-* Prompt for credentials and options along the way as necessary."
 }
 
 # Run commands
@@ -98,7 +74,7 @@ while ($true) {
 
     if ($commandObjects.Count -eq 1) {
         $commandObject = $commandObjects[0]
-    } elseif ($interactive) {
+    } elseif ($Interactive.IsPresent) {
         $commandMenu = [array]($commands | Group-Object -Property 'Module' | where {
             ([array]($_.Group)).Count -gt 0
         }| foreach {
@@ -127,7 +103,7 @@ while ($true) {
             throw "No available commands."
         }
 
-        $option = & "$($PSScriptRoot)\Read-Option.ps1" -optionGroups $commandMenu -requireSelection $false -allowSelectByName $false
+        $option = & "$($PSScriptRoot)\Read-MenuOption.ps1" -optionGroups $commandMenu -requireSelection $false -allowSelectByName $false
 
         if (-not $option) {
             break
@@ -146,9 +122,11 @@ while ($true) {
             }
         })
 
+        $commandObject = $commandObjects[0]
+
         if ($option -match '^~.*~$') {
-            Write-Warning "Command '$($command.Title)' $($command.DisabledReason)."
-            if (-not(Read-Confirmation "Continue anyway?")) {
+            Write-Warning "Command '$($commandObject.Title)' $($commandObject.DisabledReason)."
+            if (-not($Confirm.IsPresent) -and -not(& "$($PSScriptRoot)\Read-Confirmation.ps1" -Message "Continue anyway?")) {
                 Write-Host ""
                 Write-Host "Select a different command?"
                 Write-Host ""
@@ -156,94 +134,58 @@ while ($true) {
             }
         }
 
-        $commandObject = $commandObjects[0]
-
         if (-not(Test-Path $commandObject.Path)) {
             throw "File '$($commandObject.Path)' doesn't exist."
         }
 
         Write-Host "`r`n$($commandObject.Title)`r`n$('-' * ($commandObject.Title.Length))`r`n`r`n$($commandObject.Steps)`r`n"
 
-	    if ((Read-Host "Continue (y/n)") -ne 'y') {
+	    if (-not($Confirm.IsPresent) -and -not(& "$($PSScriptRoot)\Read-Confirmation.ps1" -Message "Continue")) {
             Write-Host ""
             Write-Host "Command aborted."
             Write-Host ""
             $runCommand = $false
         }
     } else {
-        throw "Command '$($command)' couldn't to be found."
+        throw "Command '$($CommandName)' couldn't to be found."
     }
 
     if ($runCommand) {
-        if ($useStart) {
-            $tmpPath = "$([System.IO.Path]::GetTempFileName()).xml"
-            Write-Host "Writing parameters to file '$($tmpPath)'..."
-            $parameterHash | Export-Clixml -Path $tmpPath
-        }
 
-        if ($interactive) {
+        if ($Interactive.IsPresent) {
             Write-Host ""
         }
 
         Write-Host "Running command '$($commandObject.Title)'..."
 
-        if ($interactive) {
+        if ($Interactive.IsPresent) {
             Write-Host ""
         }
 
-        # if (-not($interactive)) {
+        # if (-not($Interactive.IsPresent)) {
         #     Write-Progress -Activity "Command '$($commandObject.Title)'" -Status 'Running command...' -PercentComplete 30
         # }
 
         try {
-            if ($useStart) {
-                $commandString = "
-                    `$here = '$($PSScriptRoot)' ;
-                    `$parameterHash = Import-Clixml -Path '$($tmpPath)' ;
-                    `$commandPath = '$($commandObject.Path)' ;
-                    pushd '$($PWD.Path)' ;
-                    `$ErrorActionPreference = 'Stop' ;
-                    `$InformationPreference = 'Continue' ;
-                    `$PSScriptRoot = Split-Path $commandPath -Parent ;
-                    & `$commandPath @parameterHash ;
-                "
-
-                $arguments = ""
-                $arguments += " -NoProfile"
-                $arguments += " -ExecutionPolicy Bypass"
-                $arguments += " -Command ""$($commandString)"""
-                #Write-Host "PS> $commandString"
-                Start-Process -FilePath 'powershell' -ArgumentList $arguments
-            } else {
-                try {
-                    pushd (Split-Path $commandObject.Path -Parent)
-                    if ($setPSScriptRoot) {
-                        $PSScriptRoot = Split-Path $commandObject.Path -Parent
-                    }
-                    & $commandObject.Path @parameterHash
-                } finally {
-                    if ($setPSScriptRoot) {
-                        $PSScriptRoot = Split-Path $MyInvocation.MyCommand.Path -Parent
-                    }
-                }
-            }
+            $PSScriptRoot = Split-Path $commandObject.Path -Parent
+            & $commandObject.Path @CommandParameters
         #} catch {
         #    Write-Host ""
         #    Write-Error "Error: $($_.Exception.Message)"
         } finally {
-            popd
+            $PSScriptRoot = Split-Path $script:MyInvocation.MyCommand.Path -Parent
         }
 
         Write-Host ""
     }
 
-    if (($command -and $commandObject) -or -not($interactive)) {
+    if (($CommandName -and $commandObject) -or -not($Interactive.IsPresent)) {
         break
     }
 
     $commandObjects = $null
 
-    if (-not(Read-Confirmation "Would you like to run another command?")) {
+    if (-not(& "$($PSScriptRoot)\Read-Confirmation.ps1" -Message "Would you like to run another command?")) {
         break
     }
 }

@@ -9,18 +9,10 @@ if (-not($PSScriptRoot)) {
     $PSScriptRoot = Split-Path $script:MyInvocation.MyCommand.Path
 }
 
-function Read-Confirmation {
-    [CmdletBinding()]
-    param(
-        [string]$message
-    )
+if (-not($PSModulesRoot)) {
+    $PSModulesRoot = Join-Path $PSScriptRoot 'Modules'
+}
 
-    $confirmation = Read-Host "$message (y/n)"
-    if ($confirmation) {
-        if ($confirmation -eq 'y') {
-            return $true
-        } else {
-            return $false
-        }
-    }
+if (-not(Get-Module 'PowerYaml' -ErrorAction 'SilentlyContinue')) {
+    Import-Module "$($PSModulesRoot)\PowerYaml\PowerYaml.psd1"
 }

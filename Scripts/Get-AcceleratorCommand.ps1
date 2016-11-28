@@ -7,8 +7,6 @@ if (-not($PSScriptRoot)) {
     $PSScriptRoot = Split-Path $script:MyInvocation.MyCommand.Path
 }
 
-Import-Module "$($PSScriptRoot)\..\Accelerator.psd1"
-
 if ($AcceleratorPath) {
     $pathRoots = [array]($AcceleratorPath -split ';')
 } else {
