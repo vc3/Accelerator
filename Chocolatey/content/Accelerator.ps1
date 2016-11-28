@@ -218,6 +218,7 @@ if ($useStart) {
         try {
             `$ErrorActionPreference = 'Stop' ;
             `$host.ui.RawUI.WindowTitle = '$($windowTitle)' ;
+            `$global:PSModulesRoot = '$($PSModulesRoot)' ;
             Set-Location '$($PWD.Path)' ;
             Import-Module '$($here)\Accelerator.psd1' ;
             `$parameters = Import-Clixml -Path '$($tmpPath)' ;
