@@ -43,6 +43,7 @@ if (Test-Path "$($PSScriptRoot)\Accelerator.version") {
 }
 
 Write-Host "Accelerator v$($version)"
+Write-Host ""
 
 $matchedCommandFile = $null
 $matchedCommandNames = @()
@@ -157,6 +158,7 @@ while ($true) {
         }
 
         Write-Host "Running command '$($commandObject.Title)'..."
+        Write-Host ""
 
         if ($Interactive.IsPresent) {
             Write-Host ""

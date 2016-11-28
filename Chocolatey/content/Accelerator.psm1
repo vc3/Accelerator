@@ -223,6 +223,7 @@ function Start-Accelerator {
 	}
 	
 	Write-Host "Accelerator v$($version)"
+	Write-Host ""
 	
 	$matchedCommandFile = $null
 	$matchedCommandNames = @()
@@ -337,6 +338,7 @@ function Start-Accelerator {
 	        }
 	
 	        Write-Host "Running command '$($commandObject.Title)'..."
+	        Write-Host ""
 	
 	        if ($Interactive.IsPresent) {
 	            Write-Host ""
