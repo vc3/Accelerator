@@ -1,0 +1,6 @@
+Invoke command with appropriate arguments
+Compile scripts into module
+Use version from module manifest, or build and set based on nuspec
+Custom module loading
+Implement auto-update
+Support selecting PowerShell version
