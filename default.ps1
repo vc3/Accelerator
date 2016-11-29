@@ -28,22 +28,12 @@ task SetAcceleratorPath {
 task RunAccelerator {
     $global:PSModulesRoot = "$($root)\Modules"
     Write-Host "PowerShell v$($PSVersionTable.PSVersion)"
-    & "$($root)\Chocolatey\content\Accelerator.ps1" -Interactive -y
+    & "$($root)\Accelerator.ps1" -Interactive -y -UseStart -PowerShellVersion 2
 }
 
-task BuildBatFileRunner {
-    Import-Module "$($root)\Modules\Assemble\Assemble.psd1"
-    Invoke-ScriptBuild -Name 'Accelerator' -SourcePath "$($root)\BatFileRunner" -TargetPath "$($root)\Chocolatey\content\Accelerator.ps1" -Force -Silent
-}
+task Run -depends SetAcceleratorPath,RunAccelerator
 
-task BuildPowerShellModule {
-    Import-Module "$($root)\Modules\Assemble\Assemble.psd1"
-    Invoke-ScriptBuild -Name 'Accelerator' -SourcePath "$($root)\Scripts" -TargetPath "$($root)\Chocolatey\content\Accelerator.psm1" -Export 'Start-Accelerator','Read-Confirmation' -Force -Silent
-}
-
-task Run -depends BuildBatFileRunner,BuildPowerShellModule,SetAcceleratorPath,RunAccelerator
-
-task Build -depends BuildBatFileRunner,BuildPowerShellModule,BuildChocoPackages
+task Build -depends BuildChocoPackages
 
 task Deploy -depends DeployChocoPackages
 

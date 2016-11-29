@@ -2,3 +2,4 @@ Invoke command with appropriate arguments
 Use version from module manifest, or build and set based on nuspec
 Custom module loading
 Implement auto-update
+Implement logging

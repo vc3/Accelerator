@@ -30,14 +30,16 @@ if (-not($PSScriptRoot) -or $PSScriptRoot -ne (Split-Path $script:MyInvocation.M
     $PSScriptRoot = Split-Path $script:MyInvocation.MyCommand.Path -Parent
 }
 
+Import-Module "$($PSScriptRoot)\..\Modules\Accelerator\Accelerator.psd1"
+
 if (-not($CommandName) -and -not($Interactive.IsPresent)) {
     throw "A command must be specified when run in non-interactive mode."
 }
 
-if (Test-Path "$($PSScriptRoot)\Accelerator.version") {
-    $version = (Get-Content "$($PSScriptRoot)\Accelerator.version").Trim()
-} elseif (Test-Path "$($PSScriptRoot)\..\Accelerator.nuspec") {
-    $version = ([xml](Get-Content "$($PSScriptRoot)\..\Accelerator.nuspec")).package.metadata.version.Trim()
+if (Test-Path "$($PSScriptRoot)\..\Accelerator.version") {
+    $version = (Get-Content "$($PSScriptRoot)\..\Accelerator.version").Trim()
+} elseif (Test-Path "$($PSScriptRoot)\..\Chocolatey\Accelerator.nuspec") {
+    $version = ([xml](Get-Content "$($PSScriptRoot)\..\Chocolatey\Accelerator.nuspec")).package.metadata.version.Trim()
 } else {
     $version = '???'
 }
@@ -127,7 +129,7 @@ while ($true) {
 
         if ($option -match '^~.*~$') {
             Write-Warning "Command '$($commandObject.Title)' $($commandObject.DisabledReason)."
-            if (-not($Confirm.IsPresent) -and -not(& "$($PSScriptRoot)\Read-Confirmation.ps1" -Message "Continue anyway?")) {
+            if (-not($Confirm.IsPresent) -and -not(Read-Confirmation -Message "Continue anyway?")) {
                 Write-Host ""
                 Write-Host "Select a different command?"
                 Write-Host ""
@@ -141,7 +143,7 @@ while ($true) {
 
         Write-Host "`r`n$($commandObject.Title)`r`n$('-' * ($commandObject.Title.Length))`r`n`r`n$($commandObject.Steps)`r`n"
 
-	    if (-not($Confirm.IsPresent) -and -not(& "$($PSScriptRoot)\Read-Confirmation.ps1" -Message "Continue")) {
+	    if (-not($Confirm.IsPresent) -and -not(Read-Confirmation -Message "Continue")) {
             Write-Host ""
             Write-Host "Command aborted."
             Write-Host ""
@@ -183,7 +185,7 @@ while ($true) {
 
     $commandObjects = $null
 
-    if (-not(& "$($PSScriptRoot)\Read-Confirmation.ps1" -Message "Would you like to run another command?")) {
+    if (-not(Read-Confirmation -Message "Would you like to run another command?")) {
         break
     }
 }
