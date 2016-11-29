@@ -30,6 +30,9 @@ if (-not($PSScriptRoot) -or $PSScriptRoot -ne (Split-Path $script:MyInvocation.M
     $PSScriptRoot = Split-Path $script:MyInvocation.MyCommand.Path -Parent
 }
 
+Write-Verbose "PowerShell v$($PSVersionTable.PSVersion)"
+Write-Verbose "DotNet v$($PSVersionTable.CLRVersion)"
+
 Import-Module "$($PSScriptRoot)\..\Modules\Accelerator\Accelerator.psd1"
 
 if (-not($CommandName) -and -not($Interactive.IsPresent)) {
