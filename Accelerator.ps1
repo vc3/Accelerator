@@ -45,6 +45,7 @@ if ($useStart) {
     $commandString = "
         try {
             `$ErrorActionPreference = 'Stop' ;
+            `$InformationPreference = 'Continue' ;
             `$host.ui.RawUI.WindowTitle = '$($windowTitle)' ;
             `$global:PSModulesRoot = '$($PSModulesRoot)' ;
             Set-Location '$($PWD.Path)' ;

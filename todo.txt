@@ -1,4 +1,3 @@
 Invoke command with appropriate arguments
 Custom module loading
 Implement auto-update
-Implement logging
