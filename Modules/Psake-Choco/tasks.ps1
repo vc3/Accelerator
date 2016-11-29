@@ -61,6 +61,9 @@ task BuildChocoPackages {
                 } elseif ($root -and $root -ne $pkgFolder -and (Test-Path (Join-Path $root "$($pkgId).psd1"))) {
                     $pkgModuleManifest = Import-PSData (Join-Path $root "$($pkgId).psd1")
                     $pkgLocalVersion = [Version]::Parse($pkgModuleManifest.ModuleVersion)
+                } elseif ($root -and $root -ne $pkgFolder -and (Test-Path (Join-Path $root "Modules\$($pkgId)\$($pkgId).psd1"))) {
+                    $pkgModuleManifest = Import-PSData (Join-Path $root "Modules\$($pkgId)\$($pkgId).psd1")
+                    $pkgLocalVersion = [Version]::Parse($pkgModuleManifest.ModuleVersion)
                 } else {
                     Write-Error "Cannot determine local version of package '$($pkgId)'."
                     return

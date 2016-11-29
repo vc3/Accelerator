@@ -41,10 +41,13 @@ if (-not($CommandName) -and -not($Interactive.IsPresent)) {
 
 if (Test-Path "$($PSScriptRoot)\..\Accelerator.version") {
     $version = (Get-Content "$($PSScriptRoot)\..\Accelerator.version").Trim()
-} elseif (Test-Path "$($PSScriptRoot)\..\Chocolatey\Accelerator.nuspec") {
-    $version = ([xml](Get-Content "$($PSScriptRoot)\..\Chocolatey\Accelerator.nuspec")).package.metadata.version.Trim()
 } else {
-    $version = '???'
+    $acceleratorModule = Get-Module 'Accelerator' -ErrorAction SilentlyContinue
+    if ($acceleratorModule) {
+        $version = "$($acceleratorModule.Version)-dev"
+    } else {
+        $version = '???'
+    }
 }
 
 Write-Host "Accelerator v$($version)"
