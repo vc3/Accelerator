@@ -189,12 +189,20 @@ while ($true) {
         # }
 
         try {
+            $acceleratorInteractiveSet = $global:acceleratorInteractive -ne $null
+            $acceleratorInteractiveValue = $global:acceleratorInteractive
+            $global:AcceleratorInteractive = $Interactive
             $PSScriptRoot = Split-Path $commandObject.Path -Parent
             & $commandObject.Path @CommandParameters
         #} catch {
         #    Write-Host ""
         #    Write-Error "Error: $($_.Exception.Message)"
         } finally {
+            if ($acceleratorInteractiveSet) {
+                $global:AcceleratorInteractive = $acceleratorInteractiveValue
+            } else {
+                $global:AcceleratorInteractive = $null
+            }
             $PSScriptRoot = Split-Path $script:MyInvocation.MyCommand.Path -Parent
         }
 
