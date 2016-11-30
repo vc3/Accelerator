@@ -12,7 +12,7 @@
 ModuleToProcess = '.\Accelerator.psm1'
 
 # Version number of this module.
-ModuleVersion = '0.0.11'
+ModuleVersion = '0.0.12'
 
 # ID used to uniquely identify this module
 GUID = 'b5226522-f6df-db06-d2bc-2538e0d26f6c'

@@ -33,6 +33,16 @@ if (-not($PSScriptRoot) -or $PSScriptRoot -ne (Split-Path $script:MyInvocation.M
 Write-Verbose "PowerShell v$($PSVersionTable.PSVersion)"
 Write-Verbose "DotNet v$($PSVersionTable.CLRVersion)"
 
+$modulesToKeep = @()
+
+if (Get-Module 'PowerYaml' -ErrorAction SilentlyContinue) {
+    $modulesToKeep += 'PowerYaml'
+}
+
+if (Get-Module 'Environment' -ErrorAction SilentlyContinue) {
+    $modulesToKeep += 'Environment'
+}
+
 Import-Module "$($PSScriptRoot)\..\Modules\Accelerator\Accelerator.psd1"
 
 if (-not($CommandName) -and -not($Interactive.IsPresent)) {
@@ -160,6 +170,18 @@ while ($true) {
     }
 
     if ($runCommand) {
+
+        Write-Verbose "Removing modules not intended to be exposed..."
+
+        if (-not($modulesToKeep -contains 'PowerYaml') -and (Get-Module 'PowerYaml' -ErrorAction SilentlyContinue)) {
+            Write-Verbose "Removing module 'PowerYaml'..."
+            Remove-Module 'PowerYaml' | Out-Null
+        }
+
+        if (-not($modulesToKeep -contains 'Environment') -and (Get-Module 'Environment' -ErrorAction SilentlyContinue)) {
+            Write-Verbose "Removing module 'Environment'..."
+            Remove-Module 'Environment' | Out-Null
+        }
 
         if ($Interactive.IsPresent) {
             Write-Host ""

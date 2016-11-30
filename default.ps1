@@ -26,7 +26,6 @@ task SetAcceleratorPath {
 }
 
 task RunAccelerator {
-    $global:PSModulesRoot = "$($root)\Modules"
     Write-Host "PowerShell v$($PSVersionTable.PSVersion)"
     & "$($root)\Accelerator.ps1" -Interactive -y -UseStart -PowerShellVersion 2
 }
