@@ -63,8 +63,6 @@ function Write-Error {
 	    [string]$Message
 	)
 
-    Write-Host "Writing error..."
-
     try {
         Write-EventLog -LogName 'Application' -Source 'Accelerator' -EntryType Error -EventId 0 -Message $Message -Category 0
     } catch {
