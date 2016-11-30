@@ -14,11 +14,7 @@ Write-Verbose "Args:`r`n$(($parsedArgs.Keys | foreach { (' ' * 11) + $_ + '=' + 
 
 $parameters = @{}
 
-$commandParameters = @{}
-
-$parameters['CommandParameters'] = $commandParameters
-
-$parameters['UnboundParameters'] = $parsedArgs
+$parameters['CommandParameters'] = $parsedArgs
 
 if ($parsedArgs.ContainsKey('CommandName')) {
     $parameters['CommandName'] = $parsedArgs['CommandName']

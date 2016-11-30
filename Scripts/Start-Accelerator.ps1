@@ -11,14 +11,8 @@ param(
     [Alias('yes')]
     [switch]$Confirm,
 
-    [Hashtable]$CommandParameters,
-
-    [Hashtable]$UnboundParameters
+    [Hashtable]$CommandParameters
 )
-
-if ($UnboundParameters.Keys.Count -gt 0) {
-    Write-Warning "Unbound Parameters:`r`n$(($UnboundParameters.Keys | foreach { (' ' * 11) + $_ + '=' + $UnboundParameters[$_] }) -join "`r`n")"
-}
 
 $PSModuleAutoloadingPreference = 'None'
 
