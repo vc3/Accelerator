@@ -19,7 +19,10 @@ function Read-Custom {
         [scriptblock]$Selector,
 
         [Parameter()]
-        [int]$MaxAttempts = 3
+        [switch]$Required,
+
+        [Parameter()]
+        [int]$MaxAttempts = 1
     )
 
 	$numberOfAttempts = 0
@@ -27,17 +30,21 @@ function Read-Custom {
 	do {
 		$numberOfAttempts += 1
 
-        try {
-            Write-Verbose "Attempt #$($numberOfAttempts) to prompt for '$($Name)'."
+        if ($Required.IsPresent) {
+            try {
+        		$result = & $Selector
+            } catch {
+                Write-Host "ERROR: $($_.Exception.Message)" -ForegroundColor Red
+            }
+        } else {
     		$result = & $Selector
-        } catch {
-            Write-Host "ERROR: $($_.Exception.Message)"
         }
 	}
-	while (($result -eq $null) -or ($result -eq "") -and $numberOfAttempts -lt $MaxAttempts)
+	while ($Required.IsPresent -and (-not($result -is [bool]) -and ($result -eq $null -or $result -eq "")) -and $numberOfAttempts -lt $MaxAttempts)
 
-	if (($result -eq $null) -or ($result -eq "")) {
-		throw "Unable to obtain $($Name) from user."
+	if ($Required.IsPresent -and (-not($result -is [bool]) -and ($result -eq $null -or $result -eq ""))) {
+		Write-Error "Unable to obtain $($Name) from user."
+        return
 	}
 
 	return $result
@@ -56,7 +63,10 @@ function Read-Option {
         [string[]]$ValidValues,
 
         [Parameter()]
-        [int]$MaxAttempts = 3
+        [switch]$Required=$true,
+
+        [Parameter()]
+        [int]$MaxAttempts = 1
     )
 
     if ($Name) {
@@ -71,7 +81,7 @@ function Read-Option {
         $promptMessage = "Please select a $($Name)"
     }
 
-    Read-Custom -Name $promptName -MaxAttempts $MaxAttempts -Selector {
+    Read-Custom -Name $promptName -Required:$Required.IsPresent -MaxAttempts $MaxAttempts -Selector {
         $value = Read-Host "$promptMessage (options: $($ValidValues -join ', '))"
         if ($ValidValues -contains $value) {
             return $value
@@ -89,7 +99,10 @@ function Read-String {
         [string]$Name,
 
         [Parameter()]
-        [int]$MaxAttempts = 3
+        [switch]$Required,
+
+        [Parameter()]
+        [int]$MaxAttempts = 1
     )
 
     if ($Message) {
@@ -104,7 +117,7 @@ function Read-String {
         $promptName = 'string'
     }
 
-    Read-Custom -Name $promptName -MaxAttempts $MaxAttempts -Selector {
+    Read-Custom -Name $promptName -Required:$Required.IsPresent -MaxAttempts $MaxAttempts -Selector {
         Read-Host $promptMessage
     }
 }
@@ -116,10 +129,13 @@ function Read-Confirmation {
         [string]$Message,
 
         [Parameter()]
-        [int]$MaxAttempts = 3
+        [switch]$Required,
+
+        [Parameter()]
+        [int]$MaxAttempts = 1
     )
 
-    Read-Custom -Name 'confirmation' -MaxAttempts $MaxAttempts -Selector {
+    Read-Custom -Name 'confirmation' -Required:$Required.IsPresent -MaxAttempts $MaxAttempts -Selector {
         $confirmation = Read-Host "$Message (y/n)"
         if ($confirmation) {
             if ($confirmation -eq 'y') {
