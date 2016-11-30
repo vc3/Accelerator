@@ -16,6 +16,7 @@
 		<file src="..\Scripts\**" target="content\Scripts" />
 		<!--<file src="..\Serilog.options.yml" target="content" />-->
 		<file src="..\Modules\PowerYaml\**" target="content\Modules\PowerYaml" />
+		<file src="..\Modules\Environment\**" target="content\Modules\Environment" />
 		<file src="..\Modules\Accelerator\**" target="content\Modules\Accelerator" />
 	</files>
 </package>
