@@ -10,8 +10,10 @@ if (-not($PSScriptRoot)) {
 if ($AcceleratorPath) {
     $pathRoots = [array]($AcceleratorPath -split ';')
 } else {
-    $pathRoots = & "$($PSScriptRoot)\Get-AcceleratorPath.ps1" -AsArray
+    $pathRoots = & "$($PSScriptRoot)\Get-AcceleratorPath.ps1" | select -ExpandProperty 'Path'
 }
+
+$userPath = Split-Path $PROFILE -Parent
 
 foreach ($root in $pathRoots) {
     if (Test-Path "$($root)\Commands") {
@@ -62,7 +64,7 @@ foreach ($root in $pathRoots) {
             	}
             }
         }
-    } else {
+    } elseif ($root -ne $userPath) {
         Write-Warning "Path '$($root)' contains no commands."
     }
 }
