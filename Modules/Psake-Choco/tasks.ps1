@@ -31,7 +31,7 @@ task BuildChocoPackages {
 
     if($chocoSource -eq "chocolatey") {
         throw "TODO: Implement support for Chocolatey.org"
-    } elseif ($chocoSource -match "\\\\.+") {
+    } elseif ($chocoSource -match "^\\\\.+" -or $chocoSource -match "^[A-Z]:\\") {
         $chocoPullSource = $chocoSource
     } else { #assume MyGet
         $chocoPullSource = "https://www.myget.org/F/$chocoSource/auth/$chocoApiKey"
@@ -125,7 +125,7 @@ task DeployChocoPackages {
 
     if($chocoSource -eq "chocolatey") {
         throw "TODO: Implement support for Chocolatey.org"
-    } elseif ($chocoSource -match "\\\\.+") {
+    } elseif ($chocoSource -match "^\\\\.+" -or $chocoSource -match "^[A-Z]:\\") {
         $chocoPullSource = $chocoSource
         $chocoPushSource = $chocoSource
     } else { #assume MyGet
