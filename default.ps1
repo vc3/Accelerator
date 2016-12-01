@@ -22,6 +22,8 @@ if (Test-Path "$($root)\psake-local.ps1") {
 task SetAcceleratorPath {
     if ($acceleratorPath) {
         $env:AcceleratorPath = $acceleratorPath
+    } else {
+        $env:AcceleratorPath = "$(Split-Path $PROFILE -Parent)"
     }
 }
 
