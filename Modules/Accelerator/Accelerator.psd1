@@ -12,7 +12,7 @@
 ModuleToProcess = '.\Accelerator.psm1'
 
 # Version number of this module.
-ModuleVersion = '0.0.17'
+ModuleVersion = '0.0.18'
 
 # ID used to uniquely identify this module
 GUID = 'b5226522-f6df-db06-d2bc-2538e0d26f6c'
@@ -64,10 +64,10 @@ Copyright = '(c) 2016 VC3, Inc. All rights reserved.'
 
 # Modules to import as nested modules of the module specified in RootModule/ModuleToProcess
 NestedModules = @(
-    '.\Accelerator.Activity.psm1',
-    '.\Accelerator.Host.psm1',
-    '.\Accelerator.Logging.psm1',
-    '.\Accelerator.StringUtils.psm1'
+    '.\Accelerator-Activity.psm1',
+    '.\Accelerator-Host.psm1',
+    '.\Accelerator-Logging.psm1',
+    '.\Accelerator-StringUtils.psm1'
 )
 
 # Functions to export from this module
