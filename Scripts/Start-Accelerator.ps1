@@ -181,12 +181,14 @@ while ($true) {
             Write-Host ""
         }
 
-        Write-Host "Running command '$($commandObject.Title)'..."
+        Write-Information "Running command '$($commandObject.Title)'..."
         Write-Host ""
 
         # if (-not($Interactive.IsPresent)) {
         #     Write-Progress -Activity "Command '$($commandObject.Title)'" -Status 'Running command...' -PercentComplete 30
         # }
+
+        $commandSuccess = $false
 
         try {
             $acceleratorInteractiveSet = $global:acceleratorInteractive -ne $null
@@ -194,10 +196,13 @@ while ($true) {
             $global:AcceleratorInteractive = $Interactive
             $PSScriptRoot = Split-Path $commandObject.Path -Parent
             & $commandObject.Path @CommandParameters
+            $commandSuccess = $true
         #} catch {
         #    Write-Host ""
         #    Write-Error "Error: $($_.Exception.Message)"
         } finally {
+            Write-Information "Command '$($commandObject.Title)' $(if ($commandSuccess) { 'succeeded' } else { 'failed' })."
+
             if ($acceleratorInteractiveSet) {
                 $global:AcceleratorInteractive = $acceleratorInteractiveValue
             } else {
