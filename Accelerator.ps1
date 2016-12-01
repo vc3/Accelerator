@@ -54,7 +54,7 @@ if ($useStart) {
                 Write-Host `$e.Message -ForegroundColor Red
                 Write-Host `$e.StackTrace -ForegroundColor Red
 
-                `$e = `$_.Exception.InnerException
+                `$e = `$e.InnerException
             } while (`$e)
 
             Read-Host 'Press any key to continue...'
