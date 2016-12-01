@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+	<metadata>
+		<id>Accelerator</id>
+		<version>$version$</version>
+		<authors>Matt Hooper, Bryan Matthews</authors>
+		<description>Zoom!</description>
+		<dependencies>
+		</dependencies>
+	</metadata>
+	<files>
+		<file src="tools\chocolateyInstall.ps1" target="tools" />
+		<file src="tools\chocolateyUninstall.ps1" target="tools" />
+		<file src="content\Accelerator.ico" target="content" />
+		<file src="..\Accelerator.ps1" target="content" />
+		<file src="..\Scripts\**" target="content\Scripts" />
+		<!--<file src="..\Serilog.options.yml" target="content" />-->
+		<file src="..\Modules\PowerYaml\**" target="content\Modules\PowerYaml" />
+		<file src="..\Modules\Environment\**" target="content\Modules\Environment" />
+		<file src="..\Modules\Accelerator\**" target="content\Modules\Accelerator" />
+	</files>
+</package>
