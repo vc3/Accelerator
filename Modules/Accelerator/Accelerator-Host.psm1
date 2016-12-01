@@ -25,10 +25,10 @@ function Read-Custom {
         [int]$MaxAttempts = 1
     )
 
-	$numberOfAttempts = 0
+	$attemptNumber = 0
 
 	do {
-		$numberOfAttempts += 1
+		$attemptNumber += 1
 
         if ($Required.IsPresent) {
             try {
@@ -40,7 +40,7 @@ function Read-Custom {
     		$result = & $Selector
         }
 	}
-	while ($Required.IsPresent -and (-not($result -is [bool]) -and ($result -eq $null -or $result -eq "")) -and $numberOfAttempts -lt $MaxAttempts)
+	while ($Required.IsPresent -and (-not($result -is [bool]) -and ($result -eq $null -or $result -eq "")) -and $attemptNumber -lt $MaxAttempts)
 
 	if ($Required.IsPresent -and (-not($result -is [bool]) -and ($result -eq $null -or $result -eq ""))) {
 		Write-Error "Unable to obtain $($Name) from user."
@@ -63,6 +63,9 @@ function Read-Option {
         [string[]]$ValidValues,
 
         [Parameter()]
+        [string]$DefaultValue,
+
+        [Parameter()]
         [switch]$Required=$true,
 
         [Parameter()]
@@ -77,14 +80,20 @@ function Read-Option {
 
     if ($Message) {
         $promptMessage = $Message
+    } elseif ($DefaultValue) {
+        $promptMessage = "Please select a $($Name) (press ENTER to use '$($DefaultValue)')"
     } else {
         $promptMessage = "Please select a $($Name)"
     }
 
     Read-Custom -Name $promptName -Required:$Required.IsPresent -MaxAttempts $MaxAttempts -Selector {
         $value = Read-Host "$promptMessage (options: $($ValidValues -join ', '))"
-        if ($ValidValues -contains $value) {
-            return $value
+        if ($value) {
+            if ($ValidValues -contains $value) {
+                return $value
+            }
+        } elseif ($DefaultValue) {
+            return $DefaultValue
         }
     }
 }
