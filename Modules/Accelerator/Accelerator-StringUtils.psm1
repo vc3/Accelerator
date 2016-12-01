@@ -91,7 +91,7 @@ function ConvertFrom-TemplateString {
             }
         }
 
-        if (-not($matchReplacement)) {
+        if (-not($matchReplacementFound)) {
             Write-Error "Couldn't find replacement for token '$($matchValue)'."
         }
 
