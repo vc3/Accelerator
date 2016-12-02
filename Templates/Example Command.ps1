@@ -6,8 +6,9 @@
 
 .DESCRIPTION
 
+Module: <COMMAND_MODULE>
 Sequence: <COMMAND_SEQUENCE>
-Code: <COMMAND_CODE>
+Name: <COMMAND_NAME>
 Title: <COMMAND_TITLE>
 Steps:
     - <STEP_1>
@@ -17,8 +18,6 @@ Steps:
 #>
 [CmdletBinding()]
 param(
-    [switch]$Interactive,
-
     [Parameter(ValueFromRemainingArguments=$true)]
     $Params
 )
