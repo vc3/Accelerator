@@ -5,6 +5,11 @@
 		<version>$version$</version>
 		<authors>Matt Hooper, Bryan Matthews</authors>
 		<description>Zoom!</description>
+		<releaseNotes>
+## [0.1.0] - 12/6/2016
+### Added
+- Validate 'Read-String' input via regular expression.
+</releaseNotes>
 		<dependencies>
 		</dependencies>
 	</metadata>
@@ -12,6 +17,7 @@
 		<file src="tools\chocolateyInstall.ps1" target="tools" />
 		<file src="tools\chocolateyUninstall.ps1" target="tools" />
 		<file src="content\Accelerator.ico" target="content" />
+		<file src="..\ChangeLog.md" target="content" />
 		<file src="..\Accelerator.ps1" target="content" />
 		<file src="..\Scripts\**" target="content\Scripts" />
 		<!--<file src="..\Serilog.options.yml" target="content" />-->

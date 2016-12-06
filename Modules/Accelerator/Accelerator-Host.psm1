@@ -111,6 +111,12 @@ function Read-String {
         [switch]$Required,
 
         [Parameter()]
+        [string]$Format,
+
+        [Parameter()]
+        [string]$FormatDescription,
+
+        [Parameter()]
         [int]$MaxAttempts = 1
     )
 
@@ -127,7 +133,22 @@ function Read-String {
     }
 
     Read-Custom -Name $promptName -Required:$Required.IsPresent -MaxAttempts $MaxAttempts -Selector {
-        Read-Host $promptMessage
+        $value = Read-Host $promptMessage
+        if ($value) {
+            if ($Format) {
+                if ($value -match $Format) {
+                    return $value
+                } else {
+                    if ($FormatDescription) {
+                        Write-Host "Input '$($value)' doesn't match format '$($FormatDescription)'."
+                    } else {
+                        Write-Host "Input '$($value)' doesn't match the desired format."
+                    }
+                }
+            } else {
+                return $value
+            }
+        }
     }
 }
 
