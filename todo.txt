@@ -1,3 +1,6 @@
 Invoke command with appropriate arguments
 Custom module loading
 Implement auto-update
+Params, duration, etc. in start and stop logging
+Run command window hidden
+Run as admin

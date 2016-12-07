@@ -4,6 +4,10 @@ All notable changes to this project will be documented in [this file](http://kee
 
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.2.0] - 12/7/2016
+### Added
+- Support alternative syntax for template strings.
+
 ## [0.1.0] - 12/6/2016
 ### Added
 - Validate 'Read-String' input via regular expression.

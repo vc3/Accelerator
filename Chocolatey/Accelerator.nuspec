@@ -6,9 +6,9 @@
 		<authors>Matt Hooper, Bryan Matthews</authors>
 		<description>Zoom!</description>
 		<releaseNotes>
-## [0.1.0] - 12/6/2016
+## [0.2.0] - 12/7/2016
 ### Added
-- Validate 'Read-String' input via regular expression.
+- Support alternative syntax for template strings.
 </releaseNotes>
 		<dependencies>
 		</dependencies>
@@ -20,7 +20,6 @@
 		<file src="..\ChangeLog.md" target="content" />
 		<file src="..\Accelerator.ps1" target="content" />
 		<file src="..\Scripts\**" target="content\Scripts" />
-		<!--<file src="..\Serilog.options.yml" target="content" />-->
 		<file src="..\Modules\PowerYaml\**" target="content\Modules\PowerYaml" />
 		<file src="..\Modules\Environment\**" target="content\Modules\Environment" />
 		<file src="..\Modules\Accelerator\**" target="content\Modules\Accelerator" />

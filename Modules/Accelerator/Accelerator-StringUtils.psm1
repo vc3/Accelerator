@@ -5,8 +5,6 @@
 #  Company: VC3, Inc.                                                          #
 ################################################################################
 
-$regex = "(\{([A-Za-z_][A-Za-z0-9_]*)\})"
-
 function Splice-String {
     param(
         [string]$Text,
@@ -39,13 +37,22 @@ function ConvertFrom-TemplateString {
 
         [switch]$UsePowerShellVariables,
 
-        [switch]$UseEnvironmentVariables
+        [switch]$UseEnvironmentVariables,
+
+        [ValidateSet('CurlyBraces', 'PercentSigns')]
+        [string]$Syntax='CurlyBraces'
     )
 
     $str = $Template
 
     Write-Verbose "Converting from template string '$($Template)'..."
     Write-Verbose "ReplacementValues=$($ReplacementValues.Keys -join ', ')"
+
+    if ($Syntax -eq 'CurlyBraces') {
+        $regex = "((?!<\\)\{([A-Za-z_][A-Za-z0-9_]*)(?!<\\)\})"
+    } else {
+        $regex = "((?!<\\)%([A-Za-z_][A-Za-z0-9_]*)(?!<\\)%)"
+    }
 
     $match = [Regex]::Match($str, $regex)
     while ($match.Success) {
@@ -98,6 +105,13 @@ function ConvertFrom-TemplateString {
         $str = Splice-String $str $match.Index $match.Length $matchReplacement
 
         $match = [Regex]::Match($str, $regex)
+    }
+
+    if ($Syntax -eq 'CurlyBraces') {
+        $str = $str -replace '\\\{', '{'
+        $str = $str -replace '\\\}', '}'
+    } else {
+        $str = $str -replace '\\%', '%'
     }
 
     return $str
