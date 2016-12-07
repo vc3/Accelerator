@@ -39,7 +39,7 @@ function ConvertFrom-TemplateString {
 
         [switch]$UseEnvironmentVariables,
 
-        [ValidateSet('CurlyBraces', 'PercentSigns')]
+        [ValidateSet('CurlyBraces', 'PercentSigns', 'DoubleSquareBrackets')]
         [string]$Syntax='CurlyBraces'
     )
 
@@ -49,9 +49,11 @@ function ConvertFrom-TemplateString {
     Write-Verbose "ReplacementValues=$($ReplacementValues.Keys -join ', ')"
 
     if ($Syntax -eq 'CurlyBraces') {
-        $regex = "((?!<\\)\{([A-Za-z_][A-Za-z0-9_]*)(?!<\\)\})"
-    } else {
-        $regex = "((?!<\\)%([A-Za-z_][A-Za-z0-9_]*)(?!<\\)%)"
+        $regex = "((?<!\\)\{([A-Za-z_][A-Za-z0-9_]*)(?<!\\)\})"
+    } elseif ($Syntax -eq 'PercentSigns') {
+        $regex = "((?<!\\)%([A-Za-z_][A-Za-z0-9_]*)(?<!\\)%)"
+    } elseif ($Syntax -eq 'DoubleSquareBrackets') {
+        $regex = "((?<!\\)\[\[([A-Za-z_][A-Za-z0-9_]*)(?<!\\)\]\])"
     }
 
     $match = [Regex]::Match($str, $regex)
@@ -110,8 +112,11 @@ function ConvertFrom-TemplateString {
     if ($Syntax -eq 'CurlyBraces') {
         $str = $str -replace '\\\{', '{'
         $str = $str -replace '\\\}', '}'
-    } else {
+    } elseif ($Syntax -eq 'PercentSigns') {
         $str = $str -replace '\\%', '%'
+    } elseif ($Syntax -eq 'DoubleSquareBrackets') {
+        $str = $str -replace '\\\[', '['
+        $str = $str -replace '\\\]', ']'
     }
 
     return $str

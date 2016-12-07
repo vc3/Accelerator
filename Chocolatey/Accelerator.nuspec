@@ -6,9 +6,9 @@
 		<authors>Matt Hooper, Bryan Matthews</authors>
 		<description>Zoom!</description>
 		<releaseNotes>
-## [0.2.0] - 12/7/2016
+## [0.3.0] - 12/7/2016
 ### Added
-- Support alternative syntax for template strings.
+- Support alternative syntax ('[[name]]') for template strings.
 </releaseNotes>
 		<dependencies>
 		</dependencies>

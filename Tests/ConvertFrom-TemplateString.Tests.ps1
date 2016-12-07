@@ -27,14 +27,20 @@ Describe "ConvertFrom-TemplateString" {
 
         $str = ConvertFrom-TemplateString 'COMPUTERNAME=%COMPUTERNAME%' -UseEnvironmentVariables -Syntax 'PercentSigns'
         $str | Should Be "COMPUTERNAME=$($env:COMPUTERNAME)"
+
+        $str = ConvertFrom-TemplateString 'COMPUTERNAME=[[COMPUTERNAME]]' -UseEnvironmentVariables -Syntax 'DoubleSquareBrackets'
+        $str | Should Be "COMPUTERNAME=$($env:COMPUTERNAME)"
     }
 
     It "Should support using token delimiters as literals using backslash" {
-        $str = ConvertFrom-TemplateString 'COMPUTERNAME=\{{COMPUTERNAME}\}' -UseEnvironmentVariables -Syntax 'CurlyBraces'
-        $str | Should Be "COMPUTERNAME={$($env:COMPUTERNAME)}"
+        $str = ConvertFrom-TemplateString 'COMPUTERNAME=\{COMPUTERNAME\}' -UseEnvironmentVariables -Syntax 'CurlyBraces'
+        $str | Should Be "COMPUTERNAME={COMPUTERNAME}"
 
-        $str = ConvertFrom-TemplateString 'COMPUTERNAME=\%%COMPUTERNAME%\%' -UseEnvironmentVariables -Syntax 'PercentSigns'
-        $str | Should Be "COMPUTERNAME=%$($env:COMPUTERNAME)%"
+        $str = ConvertFrom-TemplateString 'COMPUTERNAME=\%COMPUTERNAME\%' -UseEnvironmentVariables -Syntax 'PercentSigns'
+        $str | Should Be "COMPUTERNAME=%COMPUTERNAME%"
+
+        $str = ConvertFrom-TemplateString 'COMPUTERNAME=\[\[COMPUTERNAME\]\]' -UseEnvironmentVariables -Syntax 'DoubleSquareBrackets'
+        $str | Should Be "COMPUTERNAME=[[COMPUTERNAME]]"
     }
 
     AfterEach {
