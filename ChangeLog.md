@@ -4,6 +4,10 @@ All notable changes to this project will be documented in [this file](http://kee
 
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.3.1] - 12/7/2016
+### Changed
+- Don't attempt to coerce error id into an event log event id.
+
 ## [0.3.0] - 12/7/2016
 ### Added
 - Support alternative syntax ('[[name]]') for template strings.

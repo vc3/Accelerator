@@ -222,9 +222,6 @@ function Write-Error {
         }
 
         $eventId = 0
-        if ($errorId) {
-            [int]::TryParse($errorId, [ref]$eventId) | Out-Null
-        }
 
         $eventMessage = @()
 
