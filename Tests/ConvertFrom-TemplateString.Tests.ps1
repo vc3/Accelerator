@@ -39,8 +39,13 @@ Describe "ConvertFrom-TemplateString" {
         $str = ConvertFrom-TemplateString 'COMPUTERNAME=\%COMPUTERNAME\%' -UseEnvironmentVariables -Syntax 'PercentSigns'
         $str | Should Be "COMPUTERNAME=%COMPUTERNAME%"
 
-        $str = ConvertFrom-TemplateString 'COMPUTERNAME=\[\[COMPUTERNAME\]\]' -UseEnvironmentVariables -Syntax 'DoubleSquareBrackets'
+        $str = ConvertFrom-TemplateString 'COMPUTERNAME=\[\[COMPUTERNAME\]\]' -UseEnvironmentVariables -Syntax 'DoubleSquareBrackets' -EscapeCharacter '\'
         $str | Should Be "COMPUTERNAME=[[COMPUTERNAME]]"
+    }
+
+    It "Should allow backslashes to be escaped and replaced" {
+        $str = ConvertFrom-TemplateString 'C:\\Folder\\{COMPUTERNAME}' -UseEnvironmentVariables -Syntax 'CurlyBraces'
+        $str | Should Be "C:\Folder\$($env:COMPUTERNAME)"
     }
 
     AfterEach {
