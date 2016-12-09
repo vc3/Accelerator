@@ -1,3 +1,4 @@
 *.bak
 *.nupkg
 psake-local.ps1
+Accelerator.cfg

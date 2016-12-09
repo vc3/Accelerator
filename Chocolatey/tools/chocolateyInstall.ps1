@@ -7,6 +7,10 @@ $InformationPreference = 'Continue'
 
 "$($packageVersion)" | Out-File "$($packagePath)\content\Accelerator.version" -Encoding UTF8 -Force
 
+if (-not(Test-Path "$($packageFolder)\content\Accelerator.cfg")) {
+    "" | Out-File "$($packageFolder)\content\Accelerator.cfg" -Encoding UTF8
+}
+
 if (-not(Test-Path "$($packageFolder)\bin")) {
     New-Item "$($packageFolder)\bin" -Type Directory | Out-Null
 }

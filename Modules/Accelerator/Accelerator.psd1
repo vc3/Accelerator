@@ -65,6 +65,7 @@ Copyright = '(c) 2016 VC3, Inc. All rights reserved.'
 # Modules to import as nested modules of the module specified in RootModule/ModuleToProcess
 NestedModules = @(
     '.\Accelerator-Activity.psm1',
+    '.\Accelerator-Configuration.psm1',
     '.\Accelerator-Host.psm1',
     '.\Accelerator-Logging.psm1',
     '.\Accelerator-StringUtils.psm1'

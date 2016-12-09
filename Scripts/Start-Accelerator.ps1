@@ -192,9 +192,14 @@ while ($true) {
         $commandSuccess = $false
 
         try {
-            $acceleratorInteractiveSet = $global:acceleratorInteractive -ne $null
-            $acceleratorInteractiveValue = $global:acceleratorInteractive
+            $acceleratorInteractiveSet = $global:AcceleratorInteractive -ne $null
+            $acceleratorInteractiveValue = $global:AcceleratorInteractive
             $global:AcceleratorInteractive = $Interactive
+
+            $acceleratorRootSet = $global:AcceleratorRoot -ne $null
+            $acceleratorRootValue = $global:AcceleratorRoot
+            $global:AcceleratorRoot = Split-Path $PSScriptRoot -Parent
+
             $PSScriptRoot = Split-Path $commandObject.Path -Parent
             & $commandObject.Path @CommandParameters
             $commandSuccess = $true
@@ -211,6 +216,13 @@ while ($true) {
             } else {
                 $global:AcceleratorInteractive = $null
             }
+
+            if ($acceleratorRootSet) {
+                $global:AcceleratorRoot = $acceleratorRootValue
+            } else {
+                $global:AcceleratorRoot = $null
+            }
+
             $PSScriptRoot = Split-Path $script:MyInvocation.MyCommand.Path -Parent
         }
 
