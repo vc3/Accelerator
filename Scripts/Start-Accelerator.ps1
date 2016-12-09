@@ -37,25 +37,27 @@ if (Get-Module 'Environment' -ErrorAction SilentlyContinue) {
     $modulesToKeep += 'Environment'
 }
 
-Import-Module "$($PSScriptRoot)\..\Modules\Accelerator\Accelerator.psd1"
+Import-Module "$($PSScriptRoot)\..\Modules\Accelerator\Accelerator.psd1" -Force
 
 if (-not($CommandName) -and -not($Interactive.IsPresent)) {
     throw "A command must be specified when run in non-interactive mode."
 }
 
-if (Test-Path "$($PSScriptRoot)\..\Accelerator.version") {
-    $version = (Get-Content "$($PSScriptRoot)\..\Accelerator.version").Trim()
-} else {
-    $acceleratorModule = Get-Module 'Accelerator' -ErrorAction SilentlyContinue
-    if ($acceleratorModule) {
-        $version = "$($acceleratorModule.Version)-dev"
+if ($Interactive.IsPresent) {
+    if (Test-Path "$($PSScriptRoot)\..\Accelerator.version") {
+        $version = (Get-Content "$($PSScriptRoot)\..\Accelerator.version").Trim()
     } else {
-        $version = '???'
+        $acceleratorModule = Get-Module 'Accelerator' -ErrorAction SilentlyContinue
+        if ($acceleratorModule) {
+            $version = "$($acceleratorModule.Version)-dev"
+        } else {
+            $version = '???'
+        }
     }
-}
 
-Write-Host "Accelerator v$($version)"
-Write-Host ""
+    Write-Host "Accelerator v$($version)"
+    Write-Host ""
+}
 
 $matchedCommandFile = $null
 $matchedCommandNames = @()
@@ -179,10 +181,9 @@ while ($true) {
 
         if ($Interactive.IsPresent) {
             Write-Host ""
+            Write-Host "Running command '$($commandObject.Title)'..."
+            Write-Host ""
         }
-
-        Write-Information "Running command '$($commandObject.Title)'..."
-        Write-Host ""
 
         # if (-not($Interactive.IsPresent)) {
         #     Write-Progress -Activity "Command '$($commandObject.Title)'" -Status 'Running command...' -PercentComplete 30
@@ -191,9 +192,14 @@ while ($true) {
         $commandSuccess = $false
 
         try {
-            $acceleratorInteractiveSet = $global:acceleratorInteractive -ne $null
-            $acceleratorInteractiveValue = $global:acceleratorInteractive
+            $acceleratorInteractiveSet = $global:AcceleratorInteractive -ne $null
+            $acceleratorInteractiveValue = $global:AcceleratorInteractive
             $global:AcceleratorInteractive = $Interactive
+
+            $acceleratorRootSet = $global:AcceleratorRoot -ne $null
+            $acceleratorRootValue = $global:AcceleratorRoot
+            $global:AcceleratorRoot = Split-Path $PSScriptRoot -Parent
+
             $PSScriptRoot = Split-Path $commandObject.Path -Parent
             & $commandObject.Path @CommandParameters
             $commandSuccess = $true
@@ -201,17 +207,28 @@ while ($true) {
         #    Write-Host ""
         #    Write-Error "Error: $($_.Exception.Message)"
         } finally {
-            Write-Information "Command '$($commandObject.Title)' $(if ($commandSuccess) { 'succeeded' } else { 'failed' })."
+            if ($Interactive.IsPresent) {
+                Write-Host "Command '$($commandObject.Title)' $(if ($commandSuccess) { 'succeeded' } else { 'failed' })."
+            }
 
             if ($acceleratorInteractiveSet) {
                 $global:AcceleratorInteractive = $acceleratorInteractiveValue
             } else {
                 $global:AcceleratorInteractive = $null
             }
+
+            if ($acceleratorRootSet) {
+                $global:AcceleratorRoot = $acceleratorRootValue
+            } else {
+                $global:AcceleratorRoot = $null
+            }
+
             $PSScriptRoot = Split-Path $script:MyInvocation.MyCommand.Path -Parent
         }
 
-        Write-Host ""
+        if ($Interactive.IsPresent) {
+            Write-Host ""
+        }
     }
 
     if (($CommandName -and $commandObject) -or -not($Interactive.IsPresent)) {

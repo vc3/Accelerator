@@ -34,6 +34,10 @@ task RunAccelerator {
 
 task Run -depends SetAcceleratorPath,RunAccelerator
 
+task Prompt -depends SetAcceleratorPath {
+    powershell -Version 2 -NoProfile
+}
+
 task Build -depends BuildChocoPackages
 
 task Deploy -depends DeployChocoPackages

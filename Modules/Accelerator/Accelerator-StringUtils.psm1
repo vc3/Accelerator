@@ -40,7 +40,9 @@ function ConvertFrom-TemplateString {
         [switch]$UseEnvironmentVariables,
 
         [ValidateSet('CurlyBraces', 'PercentSigns', 'DoubleSquareBrackets')]
-        [string]$Syntax='CurlyBraces'
+        [string]$Syntax,
+
+        [char]$EscapeCharacter
     )
 
     $str = $Template
@@ -48,12 +50,31 @@ function ConvertFrom-TemplateString {
     Write-Verbose "Converting from template string '$($Template)'..."
     Write-Verbose "ReplacementValues=$($ReplacementValues.Keys -join ', ')"
 
+    if (-not($Syntax)) {
+        $Syntax = 'CurlyBraces'
+    }
+
+    if (-not($EscapeCharacter)) {
+        if ($Syntax -eq 'DoubleSquareBrackets')  {
+            $EscapeCharacter = [char]0
+        } else {
+            $EscapeCharacter = '\'
+        }
+    }
+
+    if ($EscapeCharacter) {
+        $regexEscapeSequence = [regex]::Escape($EscapeCharacter)
+        $nonEscaped = "(?<!(?<!\\)$($regexEscapeSequence))"
+    } else {
+        $nonEscaped = ''
+    }
+
     if ($Syntax -eq 'CurlyBraces') {
-        $regex = "((?<!\\)\{([A-Za-z_][A-Za-z0-9_]*)(?<!\\)\})"
+        $regex = "($($nonEscaped)\{([A-Za-z_][A-Za-z0-9_]*)$($nonEscaped)\})"
     } elseif ($Syntax -eq 'PercentSigns') {
-        $regex = "((?<!\\)%([A-Za-z_][A-Za-z0-9_]*)(?<!\\)%)"
+        $regex = "($($nonEscaped)%([A-Za-z_][A-Za-z0-9_]*)$($nonEscaped)%)"
     } elseif ($Syntax -eq 'DoubleSquareBrackets') {
-        $regex = "((?<!\\)\[\[([A-Za-z_][A-Za-z0-9_]*)(?<!\\)\]\])"
+        $regex = "($($nonEscaped)\[$($nonEscaped)\[([A-Za-z_][A-Za-z0-9_]*)$($nonEscaped)\]$($nonEscaped)\])"
     }
 
     $match = [Regex]::Match($str, $regex)
@@ -109,14 +130,20 @@ function ConvertFrom-TemplateString {
         $match = [Regex]::Match($str, $regex)
     }
 
-    if ($Syntax -eq 'CurlyBraces') {
-        $str = $str -replace '\\\{', '{'
-        $str = $str -replace '\\\}', '}'
-    } elseif ($Syntax -eq 'PercentSigns') {
-        $str = $str -replace '\\%', '%'
-    } elseif ($Syntax -eq 'DoubleSquareBrackets') {
-        $str = $str -replace '\\\[', '['
-        $str = $str -replace '\\\]', ']'
+    if ($EscapeCharacter) {
+        $str = $str.Replace("\$($EscapeCharacter)", "$($EscapeCharacter)")
+
+        $regexEscapeSequence = [regex]::Escape($EscapeCharacter)
+
+        if ($Syntax -eq 'CurlyBraces') {
+            $str = $str -replace "$($regexEscapeSequence)\{", '{'
+            $str = $str -replace "$($regexEscapeSequence)\}", '}'
+        } elseif ($Syntax -eq 'PercentSigns') {
+            $str = $str -replace "$($regexEscapeSequence)%", '%'
+        } elseif ($Syntax -eq 'DoubleSquareBrackets') {
+            $str = $str -replace "$($regexEscapeSequence)\[", '['
+            $str = $str -replace "$($regexEscapeSequence)\]", ']'
+        }
     }
 
     return $str

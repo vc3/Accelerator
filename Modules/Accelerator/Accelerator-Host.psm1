@@ -123,7 +123,7 @@ function Read-String {
     if ($Message) {
         $promptMessage = $Message
     } else {
-        $promptMessage = "Please select a $($Name)"
+        $promptMessage = "Please provide the $($Name)"
     }
 
     if ($Name) {

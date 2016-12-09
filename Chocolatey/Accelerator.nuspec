@@ -6,9 +6,15 @@
 		<authors>Matt Hooper, Bryan Matthews</authors>
 		<description>Zoom!</description>
 		<releaseNotes>
-## [0.3.1] - 12/7/2016
+## [0.4.0] - 12/9/2016
+### Added
+- Add support for getting and setting configuration values
+### Fixed
+- Enhance string template escape character support
+- Fix prompt message for 'Read-String'
 ### Changed
-- Don't attempt to coerce error id into an event log event id.
+- Reduce logging for non-interactive command running
+- Don't warn about environment variable mismatch
 </releaseNotes>
 		<dependencies>
 		</dependencies>
@@ -19,6 +25,7 @@
 		<file src="content\Accelerator.ico" target="content" />
 		<file src="..\ChangeLog.md" target="content" />
 		<file src="..\Accelerator.ps1" target="content" />
+		<file src="..\Commands\**" target="content\Commands" />
 		<file src="..\Scripts\**" target="content\Scripts" />
 		<file src="..\Modules\PowerYaml\**" target="content\Modules\PowerYaml" />
 		<file src="..\Modules\Environment\**" target="content\Modules\Environment" />

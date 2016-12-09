@@ -342,7 +342,7 @@ function Get-EnvironmentPath {
 	        $persistedValue | Out-File $persistedPath -Encoding UTF8
 	        #>
 
-	        Write-Warning "Current and persisted value for environment variable '$($Name)' do not match."
+	        Write-Verbose "Current and persisted value for environment variable '$($Name)' do not match."
 	    }
 
 	    if ($AsString.IsPresent) {
