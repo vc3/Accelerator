@@ -54,7 +54,6 @@ if ($Interactive.IsPresent) {
             $version = '???'
         }
     }
-}
 
     Write-Host "Accelerator v$($version)"
     Write-Host ""
