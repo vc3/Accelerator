@@ -37,7 +37,7 @@ if (Get-Module 'Environment' -ErrorAction SilentlyContinue) {
     $modulesToKeep += 'Environment'
 }
 
-Import-Module "$($PSScriptRoot)\..\Modules\Accelerator\Accelerator.psd1"
+Import-Module "$($PSScriptRoot)\..\Modules\Accelerator\Accelerator.psd1" -Force
 
 if (-not($CommandName) -and -not($Interactive.IsPresent)) {
     throw "A command must be specified when run in non-interactive mode."
