@@ -24,6 +24,7 @@ if ($parsedArgs.ContainsKey('CommandName')) {
 & "$($here)\Scripts\Move-HashtableKey.ps1" -Source $parsedArgs -SourceKeys 'y','yes','Confirm' -Target $parameters -TargetKey 'Confirm'
 & "$($here)\Scripts\Move-HashtableKey.ps1" -Source $parsedArgs -SourceKeys 'Verbose','v' -Target $parameters -TargetKey 'Verbose'
 & "$($here)\Scripts\Move-HashtableKey.ps1" -Source $parsedArgs -SourceKeys 'WorkingDirectory' -Target $parameters -TargetKey 'WorkingDirectory' -DefaultValue "$((Get-Location).Path)"
+& "$($here)\Scripts\Move-HashtableKey.ps1" -Source $parsedArgs -SourceKeys 'log','LogFile','LogFilePath' -Target $parameters -TargetKey 'LogFilePath'
 & "$($here)\Scripts\Move-HashtableKey.ps1" -Source $parsedArgs -SourceKeys 'Interactive' -Target $parameters -TargetKey 'Interactive'
 
 $useStart = $parsedArgs | & "$($here)\Scripts\Extract-HashtableKey.ps1" -Keys 'UseStart' -DefaultValue $false

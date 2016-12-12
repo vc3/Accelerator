@@ -91,11 +91,14 @@ function Update-ActivityStatus {
         $currentItem = $Item
         $previousItem = $script:activityCurrentOperation[$name]
         $script:activityCurrentOperation[$name] = $Item
-    } elseif ($PSCmdlet.ParameterSetName -eq 'CurrentProgress') {
-        $script:activityCurrentOperation[$name] = $null
-        $currentItem = $null
-        $processedItems += $IncrementFactor
-        $script:activityProcessedCount[$name] = $processedItems
+    } else {
+        $previousItem = $script:activityCurrentOperation[$name]
+        if ($PSCmdlet.ParameterSetName -eq 'CurrentProgress') {
+            $script:activityCurrentOperation[$name] = $null
+            $currentItem = $null
+            $processedItems += $IncrementFactor
+            $script:activityProcessedCount[$name] = $processedItems
+        }
     }
 
     if ($AcceleratorInteractive) {

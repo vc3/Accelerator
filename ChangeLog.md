@@ -4,6 +4,10 @@ All notable changes to this project will be documented in [this file](http://kee
 
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.5.0] - 12/12/2016
+### Added
+- Add support for redirecting output to a log file
+
 ## [0.4.0] - 12/9/2016
 ### Added
 - Add support for getting and setting configuration values

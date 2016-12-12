@@ -1,8 +1,9 @@
-[CmdletBinding()]
+[CmdletBinding(DefaultParameterSetName='NonInteractive')]
 param(
     [Parameter(Position=0)]
     [string]$CommandName,
 
+    [Parameter(ParameterSetName='Interactive')]
     [switch]$Interactive,
 
     [string]$WorkingDirectory,
@@ -10,6 +11,10 @@ param(
     [Alias('y')]
     [Alias('yes')]
     [switch]$Confirm,
+
+    [Alias('LogFile')]
+    [Parameter(ParameterSetName='NonInteractive')]
+    [string]$LogFilePath,
 
     [Hashtable]$CommandParameters
 )
@@ -183,6 +188,8 @@ while ($true) {
             Write-Host ""
             Write-Host "Running command '$($commandObject.Title)'..."
             Write-Host ""
+        } elseif ($LogFilePath) {
+            "Running command '$($commandObject.Title)' at '$([DateTime]::Now)'..." | Out-File $LogFilePath -Append
         }
 
         # if (-not($Interactive.IsPresent)) {
@@ -201,7 +208,13 @@ while ($true) {
             $global:AcceleratorRoot = Split-Path $PSScriptRoot -Parent
 
             $PSScriptRoot = Split-Path $commandObject.Path -Parent
-            & $commandObject.Path @CommandParameters
+
+            if ($LogFilePath) {
+                & $commandObject.Path @CommandParameters *>> $LogFilePath
+            } else {
+                & $commandObject.Path @CommandParameters
+            }
+
             $commandSuccess = $true
         #} catch {
         #    Write-Host ""
@@ -209,6 +222,8 @@ while ($true) {
         } finally {
             if ($Interactive.IsPresent) {
                 Write-Host "Command '$($commandObject.Title)' $(if ($commandSuccess) { 'succeeded' } else { 'failed' })."
+            } elseif ($LogFilePath) {
+                "Command '$($commandObject.Title)' $(if ($commandSuccess) { 'succeeded' } else { 'failed' }) at '$([DateTime]::Now)'." | Out-File $LogFilePath -Append
             }
 
             if ($acceleratorInteractiveSet) {
