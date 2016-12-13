@@ -6,9 +6,9 @@
 		<authors>Matt Hooper, Bryan Matthews</authors>
 		<description>Zoom!</description>
 		<releaseNotes>
-## [0.5.0] - 12/12/2016
+## [0.6.0] - 12/13/2016
 ### Added
-- Add support for redirecting output to a log file
+- Add '-RunAsAdmin' option
 </releaseNotes>
 		<dependencies>
 		</dependencies>

@@ -28,6 +28,7 @@ if ($parsedArgs.ContainsKey('CommandName')) {
 & "$($here)\Scripts\Move-HashtableKey.ps1" -Source $parsedArgs -SourceKeys 'Interactive' -Target $parameters -TargetKey 'Interactive'
 
 $useStart = $parsedArgs | & "$($here)\Scripts\Extract-HashtableKey.ps1" -Keys 'UseStart' -DefaultValue $false
+$runAsAdmin = $parsedArgs | & "$($here)\Scripts\Extract-HashtableKey.ps1" -Keys 'RunAsAdmin' -DefaultValue $false
 $windowTitle = $parsedArgs | & "$($here)\Scripts\Extract-HashtableKey.ps1" -Keys 'WindowTitle' -DefaultValue 'Accelerator'
 $powershellVersion = $parsedArgs | & "$($here)\Scripts\Extract-HashtableKey.ps1" -Keys 'PowerShellVersion'
 
@@ -43,6 +44,7 @@ if ($useStart) {
         try {
             `$ErrorActionPreference = 'Stop' ;
             `$InformationPreference = 'Continue' ;
+            `$env:AcceleratorPath = '$($env:AcceleratorPath)' ;
             `$host.ui.RawUI.WindowTitle = '$($windowTitle)' ;
             `$global:PSModulesRoot = '$($PSModulesRoot)' ;
             Set-Location '$($PWD.Path)' ;
@@ -73,10 +75,20 @@ if ($useStart) {
     $arguments += " -Command ""$($commandString)"""
 
     Write-Host "Starting Accelerator in a new process..."
-    Start-Process -FilePath 'powershell' -ArgumentList $arguments
+
+    if ($runAsAdmin) {
+        Start-Process -FilePath 'powershell' -ArgumentList $arguments -Verb RunAs
+    } else {
+        Start-Process -FilePath 'powershell' -ArgumentList $arguments
+    }
 } else {
     if ($powershellVersion) {
         Write-Error "Can't force a particular PowerShell version unless the '-UseStart' flag is used."
+        return
+    }
+
+    if ($runAsAdmin) {
+        Write-Error "Can't force run as admin unless the '-UseStart' flag is used."
         return
     }
 
