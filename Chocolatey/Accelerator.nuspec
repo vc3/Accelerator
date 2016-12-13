@@ -6,9 +6,9 @@
 		<authors>Matt Hooper, Bryan Matthews</authors>
 		<description>Zoom!</description>
 		<releaseNotes>
-## [0.6.0] - 12/13/2016
-### Added
-- Add '-RunAsAdmin' option
+## [0.7.0] - 12/13/2016
+### Changed
+- Capture and log error information
 </releaseNotes>
 		<dependencies>
 		</dependencies>

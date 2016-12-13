@@ -216,9 +216,18 @@ while ($true) {
             }
 
             $commandSuccess = $true
-        #} catch {
-        #    Write-Host ""
-        #    Write-Error "Error: $($_.Exception.Message)"
+        } catch {
+            if ($Interactive.IsPresent) {
+                Write-Host "Error: $($_.Exception.Message)" -ForegroundColor Red
+                if ($_.Exception.StackTrace) {
+                    Write-Host "$($_.Exception.StackTrace)" -ForegroundColor Red
+                }
+            } elseif ($LogFilePath) {
+                "Error: $($_.Exception.Message)" | Out-File $LogFilePath -Append
+                if ($_.Exception.StackTrace) {
+                    "$($_.Exception.StackTrace)" | Out-File $LogFilePath -Append
+                }
+            }
         } finally {
             if ($Interactive.IsPresent) {
                 Write-Host "Command '$($commandObject.Title)' $(if ($commandSuccess) { 'succeeded' } else { 'failed' })."
