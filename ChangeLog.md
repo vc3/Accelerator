@@ -4,6 +4,10 @@ All notable changes to this project will be documented in [this file](http://kee
 
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.7.1] - 12/14/2016
+### Changed
+- Minor logging/error handling tweaks
+
 ## [0.7.0] - 12/13/2016
 ### Changed
 - Capture and log error information

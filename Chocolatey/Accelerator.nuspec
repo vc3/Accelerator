@@ -6,9 +6,9 @@
 		<authors>Matt Hooper, Bryan Matthews</authors>
 		<description>Zoom!</description>
 		<releaseNotes>
-## [0.7.0] - 12/13/2016
+## [0.7.1] - 12/14/2016
 ### Changed
-- Capture and log error information
+- Minor logging/error handling tweaks
 </releaseNotes>
 		<dependencies>
 		</dependencies>

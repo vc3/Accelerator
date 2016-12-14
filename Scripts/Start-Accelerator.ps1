@@ -21,8 +21,8 @@ param(
 
 $PSModuleAutoloadingPreference = 'None'
 
-$ErrorActionPreference = 'Stop'
-$InformationPreference = 'Continue'
+$global:ErrorActionPreference = 'Stop'
+$global:InformationPreference = 'Continue'
 
 if (-not($PSScriptRoot) -or $PSScriptRoot -ne (Split-Path $script:MyInvocation.MyCommand.Path -Parent)) {
     Write-Verbose "Setting 'PSScriptRoot' variable since it isn't automatically set by the runtime..."
@@ -228,6 +228,8 @@ while ($true) {
                     "$($_.Exception.StackTrace)" | Out-File $LogFilePath -Append
                 }
             }
+
+            throw
         } finally {
             if ($Interactive.IsPresent) {
                 Write-Host "Command '$($commandObject.Title)' $(if ($commandSuccess) { 'succeeded' } else { 'failed' })."
