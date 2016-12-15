@@ -6,9 +6,9 @@
 		<authors>Matt Hooper, Bryan Matthews</authors>
 		<description>Zoom!</description>
 		<releaseNotes>
-## [0.7.1] - 12/14/2016
-### Changed
-- Minor logging/error handling tweaks
+## [0.8.0] - 12/15/2016
+### Removed
+- Removed 'Activity' module
 </releaseNotes>
 		<dependencies>
 		</dependencies>
