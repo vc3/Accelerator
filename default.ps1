@@ -11,6 +11,7 @@ properties {
         }
     }
 
+    $psVersion = 2
     $chocoOutDir = $outDir
     $chocoPkgsDir = $root
 }
@@ -29,7 +30,7 @@ task SetAcceleratorPath {
 
 task RunAccelerator {
     Write-Host "PowerShell v$($PSVersionTable.PSVersion)"
-    & "$($root)\Accelerator.ps1" -Interactive -y -UseStart -PowerShellVersion 2
+    & "$($root)\Accelerator.ps1" -Interactive -y -UseStart -PowerShellVersion $psVersion
 }
 
 task Run -depends SetAcceleratorPath,RunAccelerator
