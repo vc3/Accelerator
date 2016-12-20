@@ -38,6 +38,10 @@ process {
         if ($metadata -and $metadata['Sequence']) {
             Write-Verbose "Sequence: $($metadata['Sequence'])"
             $sequence = $metadata['Sequence']
+            $sequenceAsInt = 0
+            if ([int]::TryParse($sequence, [ref]$sequenceAsInt)) {
+                $sequence = $sequenceAsInt
+            }
         }
         if ($metadata -and $metadata['Module']) {
             Write-Verbose "Module: $($metadata['Module'])"

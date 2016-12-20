@@ -6,9 +6,9 @@
 		<authors>Matt Hooper, Bryan Matthews</authors>
 		<description>Zoom!</description>
 		<releaseNotes>
-## [0.8.0] - 12/15/2016
-### Removed
-- Removed 'Activity' module
+## [0.9.0] - 12/20/2016
+### Fixed
+- Fixed parsing of command sequence for sorting
 </releaseNotes>
 		<dependencies>
 		</dependencies>

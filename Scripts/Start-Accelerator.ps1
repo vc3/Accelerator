@@ -103,8 +103,13 @@ while ($true) {
             $menuGroup['Name'] = $_.Name
 
             $menuGroup['Options'] = [array]($_.Group | sort {
-                if ($_.Sequence -is [int]) {
-                    $_.Sequence
+                if ($_.Sequence -ne $null) {
+                    if ($_.Sequence -is [int]) {
+                        $_.Sequence
+                    } else {
+                        Write-Warning "Invalid sequence value '$($_.Sequence)' for command '$($_.Name)'."
+                        [int]::MaxValue
+                    }
                 } else {
                     [int]::MaxValue
                 }
