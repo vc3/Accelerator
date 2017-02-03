@@ -11,33 +11,15 @@ if (-not(Test-Path "$($packageFolder)\content\Accelerator.cfg")) {
     "" | Out-File "$($packageFolder)\content\Accelerator.cfg" -Encoding UTF8
 }
 
+$batFile = "$packagePath\bin\Accelerator.bat"
+
 if (-not(Test-Path "$($packageFolder)\bin")) {
     New-Item "$($packageFolder)\bin" -Type Directory | Out-Null
 }
 
-"@echo off`r`n@powershell -NoProfile -ExecutionPolicy Bypass -Command `"& '%~dp0\..\content\Accelerator.ps1' %*`"`r`n" | `
-    Out-File "$($packagePath)\bin\Accelerator.bat" -Encoding ASCII -Force
+"@echo off`r`n@powershell -NoProfile -ExecutionPolicy Bypass -Command `"& '%~dp0\..\content\Accelerator.ps1' %*`"`r`n" | Out-File $batFile -Encoding ASCII -Force
 
-$batFile = "$packagePath\bin\Accelerator.bat"
-
-if ($env:ChocolateyInstall) {
-    $exeFile = Join-Path $env:ChocolateyInstall 'bin\Accelerator.exe'
-} else {
-    $exeFile = 'C:\ProgramData\chocolatey\bin\Accelerator.exe'
-}
-
-$shortcutFile = "$($env:USERPROFILE)\Desktop\Accelerator.lnk"
-
-$iconFile = "$packagePath\content\Accelerator.ico"
-
-# Create shortcuts
 Install-BinFile -Name Accelerator -Path $batFile
-Install-ChocolateyShortcut `
-    -ShortcutFilePath $shortcutFile `
-    -Arguments "-Interactive" `
-    -TargetPath $exeFile `
-    -WorkingDirectory $env:USERPROFILE `
-    -IconLocation $iconFile
 
 if (Get-EventLog -LogName 'Application' -Source 'Accelerator' -Newest 1 -ErrorAction SilentlyContinue) {
     Write-Host "Event log source 'Accelerator' is already registered."
