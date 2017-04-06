@@ -4,6 +4,10 @@ All notable changes to this project will be documented in [this file](http://kee
 
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.10.0] - 2/3/2017
+### Changed
+- Don't create desktop shortcut
+
 ## [0.9.0] - 12/20/2016
 ### Fixed
 - Fixed parsing of command sequence for sorting
