@@ -11,13 +11,26 @@ properties {
         }
     }
 
-    $psVersion = 2
+    $psVersion = 0
+
     $chocoOutDir = $outDir
     $chocoPkgsDir = $root
+
+    $acceleratorNewWindow = $false
+
+    $acceleratorCommand = $null
+
+    $acceleratorFunction = $null
+
+    $acceleratorParams = @{}
 }
 
 if (Test-Path "$($root)\psake-local.ps1") {
     include "$($root)\psake-local.ps1"
+}
+
+properties {
+    $acceleratorScript = "$($root)\Accelerator.ps1"
 }
 
 task SetAcceleratorPath {
@@ -28,12 +41,41 @@ task SetAcceleratorPath {
     }
 }
 
-task RunAccelerator {
-    Write-Host "PowerShell v$($PSVersionTable.PSVersion)"
-    & "$($root)\Accelerator.ps1" -Interactive -y -UseStart -PowerShellVersion $psVersion
+task SetAcceleratorInteractive {
+    $env:AcceleratorInteractive = $true
 }
 
-task Run -depends SetAcceleratorPath,RunAccelerator
+task RunAccelerator {
+    Write-Host "PowerShell v$($PSVersionTable.PSVersion)"
+
+    if ($psVersion -gt 0) {
+        $acceleratorNewWindow = $true
+        $acceleratorParams['PowerShellVersion'] = $psVersion
+    }
+
+    if ($acceleratorNewWindow) {
+        $acceleratorParams['UseStart'] = $true
+    }
+
+    if ($env:AcceleratorInteractive) {
+        $acceleratorParams['Interactive'] = $true
+        $acceleratorParams['Confirm'] = $true
+    }
+
+    if ($acceleratorCommand) {
+        $acceleratorParams['CommandName'] = $acceleratorCommand
+    }
+
+    if ($acceleratorFunction) {
+        $acceleratorParams | ForEach-Object { &$acceleratorFunction }
+    } else {
+        & $acceleratorScript @acceleratorParams
+    }
+}
+
+task Run -depends SetAcceleratorPath,SetAcceleratorInteractive,RunAccelerator
+
+task RunNoUI -depends SetAcceleratorPath,RunAccelerator
 
 task Prompt -depends SetAcceleratorPath {
     powershell -Version 2 -NoProfile

@@ -153,4 +153,4 @@ elseif ($allowSelectByName)
 Write-Host "Invalid selection: $selection"
 Write-Host ""
 
-return (& "$($PSScriptRoot)\Read-MenuOption.ps1" -optionGroups $optionGroups -message $message -displayOptions $displayOptions)
+return (& "$($PSScriptRoot)\Read-MenuOption.ps1" -optionGroups $optionGroups -requireSelection $requireSelection -message $message -displayOptions $displayOptions)

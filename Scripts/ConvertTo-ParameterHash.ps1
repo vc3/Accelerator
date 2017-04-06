@@ -39,7 +39,7 @@ process {
         for ($i = 0; $i -lt $parameterList.Count; $i += 1) {
             $param = $parameterList[$i]
             Write-Verbose "Param: $param"
-            if ($param -match '^\-([A-Za-z]+\:?)$') {
+            if ($param -match '^\-([A-Za-z0-9]+\:?)$') {
                 if ($parameterName) {
                     if ($parameterName.EndsWith(':')) {
                         Write-Error "Invalid syntax '$($parameterName)'."
@@ -61,15 +61,20 @@ process {
                 }
             } elseif ($parameterName) {
                 $parameterBool = $false
+                $parameterInt = 0
                 if ($parameterName.EndsWith(':')) {
                     if ([bool]::TryParse($param, [ref]$parameterBool)) {
                         $parameterName = $parameterName.Substring(0, $parameterName.Length - 1)
                         $parameterValue = $parameterBool
                         $parameterReady = $true
+                    } elseif ([int]::TryParse($param, [ref]$parameterInt)) {
+                        $parameterName = $parameterName.Substring(0, $parameterName.Length - 1)
+                        $parameterValue = $parameterInt
+                        $parameterReady = $true
                     } else {
-                        Write-Error "Invalid syntax '$($parameterName)$($param)'."
-                        $parameterName = $null
-                        $parameterReady = $false
+                        $parameterName = $parameterName.Substring(0, $parameterName.Length - 1)
+                        $parameterValue = $param
+                        $parameterReady = $true
                     }
                 } else {
                     $parameterValue = $param

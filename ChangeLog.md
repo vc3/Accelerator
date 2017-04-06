@@ -4,6 +4,12 @@ All notable changes to this project will be documented in [this file](http://kee
 
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.11.0] - 4/6/2017
+### Fixed
+- Allow parameter names with numeric characters
+- Allow `-p:v` syntax for integer and string parameters
+- Don't require command selection on initial prompt
+
 ## [0.10.0] - 2/3/2017
 ### Changed
 - Don't create desktop shortcut
