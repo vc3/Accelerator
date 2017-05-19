@@ -6,11 +6,9 @@
 		<authors>Matt Hooper, Bryan Matthews</authors>
 		<description>Zoom!</description>
 		<releaseNotes>
-## [0.11.0] - 4/6/2017
+## [0.12.0] - 5/18/2017
 ### Fixed
-- Allow parameter names with numeric characters
-- Allow `-p:v` syntax for integer and string parameters
-- Don't require command selection on initial prompt
+- Quote parameters as needed when passed to powershell
 </releaseNotes>
 		<dependencies>
 		</dependencies>
@@ -20,6 +18,7 @@
 		<file src="tools\chocolateyUninstall.ps1" target="tools" />
 		<file src="content\Accelerator.ico" target="content" />
 		<file src="..\ChangeLog.md" target="content" />
+		<file src="..\Accelerator.bat" target="content" />
 		<file src="..\Accelerator.ps1" target="content" />
 		<file src="..\Commands\**" target="content\Commands" />
 		<file src="..\Scripts\**" target="content\Scripts" />

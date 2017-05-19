@@ -4,6 +4,10 @@ All notable changes to this project will be documented in [this file](http://kee
 
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.12.0] - 5/18/2017
+### Fixed
+- Quote parameters as needed when passed to powershell
+
 ## [0.11.0] - 4/6/2017
 ### Fixed
 - Allow parameter names with numeric characters

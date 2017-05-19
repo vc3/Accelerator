@@ -11,13 +11,7 @@ if (-not(Test-Path "$($packageFolder)\content\Accelerator.cfg")) {
     "" | Out-File "$($packageFolder)\content\Accelerator.cfg" -Encoding UTF8
 }
 
-$batFile = "$packagePath\bin\Accelerator.bat"
-
-if (-not(Test-Path "$($packageFolder)\bin")) {
-    New-Item "$($packageFolder)\bin" -Type Directory | Out-Null
-}
-
-"@echo off`r`n@powershell -NoProfile -ExecutionPolicy Bypass -Command `"& '%~dp0\..\content\Accelerator.ps1' %*`"`r`n" | Out-File $batFile -Encoding ASCII -Force
+$batFile = "$packagePath\content\Accelerator.bat"
 
 Install-BinFile -Name Accelerator -Path $batFile
 
