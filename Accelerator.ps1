@@ -29,10 +29,12 @@ if ($parsedArgs.ContainsKey('CommandName')) {
 
 $useStart = $parsedArgs | & "$($here)\Scripts\Extract-HashtableKey.ps1" -Keys 'UseStart' -DefaultValue $false
 $runAsAdmin = $parsedArgs | & "$($here)\Scripts\Extract-HashtableKey.ps1" -Keys 'RunAsAdmin' -DefaultValue $false
-$windowTitle = $parsedArgs | & "$($here)\Scripts\Extract-HashtableKey.ps1" -Keys 'WindowTitle' -DefaultValue 'Accelerator'
+$windowTitle = $parsedArgs | & "$($here)\Scripts\Extract-HashtableKey.ps1" -Keys 'WindowTitle' -DefaultValue "$(if ($parameters['Interactive']) { 'Accelerator' })"
 $powershellVersion = $parsedArgs | & "$($here)\Scripts\Extract-HashtableKey.ps1" -Keys 'PowerShellVersion'
 
-$host.ui.RawUI.WindowTitle = $windowTitle
+if ($windowTitle) {
+    $host.ui.RawUI.WindowTitle = $windowTitle
+}
 
 if ($useStart) {
     $tmpPath = "$([System.IO.Path]::GetTempFileName()).xml"
@@ -45,7 +47,9 @@ if ($useStart) {
             `$ErrorActionPreference = 'Stop' ;
             `$InformationPreference = 'Continue' ;
             `$env:AcceleratorPath = '$($env:AcceleratorPath)' ;
-            `$host.ui.RawUI.WindowTitle = '$($windowTitle)' ;
+            if ('$($windowTitle)') {
+                `$host.ui.RawUI.WindowTitle = '$($windowTitle)' ;
+            }
             `$global:PSModulesRoot = '$($PSModulesRoot)' ;
             Set-Location '$($PWD.Path)' ;
             `$parameters = Import-Clixml -Path '$($tmpPath)' ;
@@ -92,5 +96,11 @@ if ($useStart) {
         return
     }
 
-    & "$($here)\Scripts\Start-Accelerator.ps1" @parameters
+    try {
+        & "$($here)\Scripts\Start-Accelerator.ps1" @parameters
+    } finally {
+        if ($parameters['Interactive'] -and -not($global:AcceleratorCommandSuccess)) {
+            Read-Host 'Press any key to continue...'
+        }
+    }
 }

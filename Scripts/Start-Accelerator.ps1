@@ -61,7 +61,6 @@ if ($Interactive.IsPresent) {
     }
 
     Write-Host "Accelerator v$($version)"
-    Write-Host ""
 }
 
 $matchedCommandFile = $null
@@ -204,12 +203,8 @@ while ($true) {
         $commandSuccess = $false
 
         try {
-            $acceleratorInteractiveSet = $global:AcceleratorInteractive -ne $null
-            $acceleratorInteractiveValue = $global:AcceleratorInteractive
             $global:AcceleratorInteractive = $Interactive
 
-            $acceleratorRootSet = $global:AcceleratorRoot -ne $null
-            $acceleratorRootValue = $global:AcceleratorRoot
             $global:AcceleratorRoot = Split-Path $PSScriptRoot -Parent
 
             $PSScriptRoot = Split-Path $commandObject.Path -Parent
@@ -242,17 +237,11 @@ while ($true) {
                 "Command '$($commandObject.Title)' $(if ($commandSuccess) { 'succeeded' } else { 'failed' }) at '$([DateTime]::Now)'." | Out-File $LogFilePath -Append
             }
 
-            if ($acceleratorInteractiveSet) {
-                $global:AcceleratorInteractive = $acceleratorInteractiveValue
-            } else {
-                $global:AcceleratorInteractive = $null
-            }
+            $global:AcceleratorCommandSuccess = $commandSuccess
 
-            if ($acceleratorRootSet) {
-                $global:AcceleratorRoot = $acceleratorRootValue
-            } else {
-                $global:AcceleratorRoot = $null
-            }
+            $global:AcceleratorInteractive = $null
+
+            $global:AcceleratorRoot = $null
 
             $PSScriptRoot = Split-Path $script:MyInvocation.MyCommand.Path -Parent
         }

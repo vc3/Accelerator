@@ -4,6 +4,15 @@ All notable changes to this project will be documented in [this file](http://kee
 
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.13.0] - 5/19/2017
+### Fixed
+- Don't set default window title for non-interactive call
+### Added
+- Pause on error when using -Interactive and not -UseStart
+### Changed
+- Don't attempt to reset Accelerator* global variables
+- Minor formatting change
+
 ## [0.12.0] - 5/18/2017
 ### Fixed
 - Quote parameters as needed when passed to powershell
