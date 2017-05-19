@@ -25,6 +25,7 @@ process {
     $users = '*'
     $disabledReason = ''
     $steps = $null
+    $runAsAdmin = $null
 
     if (-not($DefaultModuleName)) {
         $module = "$(Split-Path (Split-Path $Path -Parent) -Leaf)" -replace '%20', ' '
@@ -82,6 +83,15 @@ process {
         } else {
             $steps = $help.Synopsis
         }
+        if ($metadata -and $metadata['RunAsAdmin']) {
+            if ($metadata['RunAsAdmin'] -is [Boolean]) {
+                $runAsAdmin = $metadata['RunAsAdmin']
+            } else {
+                $runAsAdmin = [bool]::Parse($metadata['RunAsAdmin'])
+            }
+        } else {
+            $runAsAdmin = $false
+        }
     }
 
     $command = New-Object 'PSObject'
@@ -95,6 +105,7 @@ process {
     $command | Add-Member -Type NoteProperty -Name 'Users' -Value $users
     $command | Add-Member -Type NoteProperty -Name 'Steps' -Value $steps
     $command | Add-Member -Type NoteProperty -Name 'DisabledReason' -Value $disabledReason
+    $command | Add-Member -Type NoteProperty -Name 'RunAsAdmin' -Value $runAsAdmin
 
     return $command
 }

@@ -92,15 +92,42 @@ if ($useStart) {
     }
 
     if ($runAsAdmin) {
-        Write-Error "Can't force run as admin unless the '-UseStart' flag is used."
-        return
+        $identity = [System.Security.Principal.WindowsIdentity]::GetCurrent()
+        $principal = New-Object System.Security.Principal.WindowsPrincipal($identity)
+        $adminRole = [System.Security.Principal.WindowsBuiltInRole]::Administrator
+        if ($principal.IsInRole($adminRole)) {
+            Write-Verbose "Script is already running with elevated privileges."
+        } else {
+            Write-Error "Can't force run as admin unless the '-UseStart' flag is used."
+            return
+        }
     }
 
     try {
+        $global:AcceleratorCommandSuccess = $null
+
         & "$($here)\Scripts\Start-Accelerator.ps1" @parameters
+    } catch {
+        if ($global:AcceleratorCommandSuccess -eq $null) {
+            if ($parameters['Interactive']) {
+                Write-Host "Error: $($_.Exception.Message)" -ForegroundColor Red
+                if ($_.Exception.StackTrace) {
+                    Write-Host "$($_.Exception.StackTrace)" -ForegroundColor Red
+                }
+            } elseif ($parameters['LogFilePath']) {
+                "Error: $($_.Exception.Message)" | Out-File $parameters['LogFilePath'] -Append
+                if ($_.Exception.StackTrace) {
+                    "$($_.Exception.StackTrace)" | Out-File $parameters['LogFilePath'] -Append
+                }
+            }
+        }
+
+        throw
     } finally {
         if ($parameters['Interactive'] -and -not($global:AcceleratorCommandSuccess)) {
             Read-Host 'Press any key to continue...'
         }
+
+        $global:AcceleratorCommandSuccess = $null
     }
 }

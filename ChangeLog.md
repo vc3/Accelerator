@@ -4,6 +4,13 @@ All notable changes to this project will be documented in [this file](http://kee
 
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.14.0] - 5/19/2017
+### Fixed
+- Print error before pausing if `Start-Accelerator` could not be called
+- Silently continue if already elevated when -RunAsAdmin is specified without -UseStart
+### Added
+- Add 'RunAsAdmin' metadata option that validates elevated privileges if set
+
 ## [0.13.0] - 5/19/2017
 ### Fixed
 - Don't set default window title for non-interactive call

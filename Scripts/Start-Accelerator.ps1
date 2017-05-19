@@ -176,6 +176,15 @@ while ($true) {
 
     if ($runCommand) {
 
+        if ($commandObject.RunAsAdmin) {
+            $identity = [System.Security.Principal.WindowsIdentity]::GetCurrent()
+            $principal = New-Object System.Security.Principal.WindowsPrincipal($identity)
+            $adminRole = [System.Security.Principal.WindowsBuiltInRole]::Administrator
+            if (-not($principal.IsInRole($adminRole))) {
+                throw "Command '$($commandObject.Title)' requires elevation."
+            }
+        }
+
         Write-Verbose "Removing modules not intended to be exposed..."
 
         if (-not($modulesToKeep -contains 'PowerYaml') -and (Get-Module 'PowerYaml' -ErrorAction SilentlyContinue)) {

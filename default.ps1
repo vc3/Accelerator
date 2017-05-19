@@ -29,7 +29,7 @@ if (Test-Path "$($root)\psake-local.ps1") {
     include "$($root)\psake-local.ps1"
 }
 
-include '.\Modules\Psake-Choco\psake-tasks.ps1'
+include '.\Modules\Psake-Choco\tasks.ps1'
 
 properties {
     $acceleratorScript = "$($root)\Accelerator.ps1"
@@ -83,8 +83,9 @@ task Prompt -depends SetAcceleratorPath {
     powershell -Version 2 -NoProfile
 }
 
-task Build -depends Choco:BuildPackages
+task Build -depends BuildChocoPackages
 
-task Deploy -depends Choco:DeployPackages
+## Currently this would push all nupkg files in the output directory
+# task Deploy -depends DeployChocoPackages
 
 task Default -depends Run

@@ -6,14 +6,12 @@
 		<authors>Matt Hooper, Bryan Matthews</authors>
 		<description>Zoom!</description>
 		<releaseNotes>
-## [0.13.0] - 5/19/2017
+## [0.14.0] - 5/19/2017
 ### Fixed
-- Don't set default window title for non-interactive call
+- Print error before pausing if `Start-Accelerator` could not be called
+- Silently continue if already elevated when -RunAsAdmin is specified without -UseStart
 ### Added
-- Pause on error when using -Interactive and not -UseStart
-### Changed
-- Don't attempt to reset Accelerator* global variables
-- Minor formatting change
+- Add 'RunAsAdmin' metadata option that validates elevated privileges if set
 </releaseNotes>
 		<dependencies>
 		</dependencies>
