@@ -24,6 +24,8 @@ $PSModuleAutoloadingPreference = 'None'
 $global:ErrorActionPreference = 'Stop'
 $global:InformationPreference = 'Continue'
 
+$global:AcceleratorCommandSuccess = $null
+
 if (-not($PSScriptRoot) -or $PSScriptRoot -ne (Split-Path $script:MyInvocation.MyCommand.Path -Parent)) {
     Write-Verbose "Setting 'PSScriptRoot' variable since it isn't automatically set by the runtime..."
     $PSScriptRoot = Split-Path $script:MyInvocation.MyCommand.Path -Parent

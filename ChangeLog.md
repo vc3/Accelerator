@@ -4,6 +4,10 @@ All notable changes to this project will be documented in [this file](http://kee
 
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.15.0] - 5/19/2017
+### Fixed
+- Fix issues with auto-pause on error
+
 ## [0.14.0] - 5/19/2017
 ### Fixed
 - Print error before pausing if `Start-Accelerator` could not be called

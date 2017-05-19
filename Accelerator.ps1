@@ -104,11 +104,26 @@ if ($useStart) {
     }
 
     try {
-        $global:AcceleratorCommandSuccess = $null
+        try {
+            Remove-Variable 'AcceleratorCommandSuccess' -Scope Global
+        } catch {
+            # Do nothing
+        }
 
         & "$($here)\Scripts\Start-Accelerator.ps1" @parameters
     } catch {
-        if ($global:AcceleratorCommandSuccess -eq $null) {
+        # Detect when the 'Start-Accelerator' script is not invoked at all
+        try {
+            if (Get-Variable 'AcceleratorCommandSuccess' -Scope Global) {
+                $acceleratorWasInvoked = $true
+            } else {
+                $acceleratorWasInvoked = $false
+            }
+        } catch {
+            $acceleratorWasInvoked = $false
+        }
+
+        if (-not($acceleratorWasInvoked)) {
             if ($parameters['Interactive']) {
                 Write-Host "Error: $($_.Exception.Message)" -ForegroundColor Red
                 if ($_.Exception.StackTrace) {
@@ -124,10 +139,25 @@ if ($useStart) {
 
         throw
     } finally {
-        if ($parameters['Interactive'] -and -not($global:AcceleratorCommandSuccess)) {
+        # Detect when the 'Start-Accelerator' script is not invoked at all
+        try {
+            if (Get-Variable 'AcceleratorCommandSuccess' -Scope Global) {
+                $acceleratorWasInvoked = $true
+            } else {
+                $acceleratorWasInvoked = $false
+            }
+        } catch {
+            $acceleratorWasInvoked = $false
+        }
+
+        if ($acceleratorWasInvoked -and $parameters['Interactive'] -and $global:AcceleratorCommandSuccess -eq $false) {
             Read-Host 'Press any key to continue...'
         }
 
-        $global:AcceleratorCommandSuccess = $null
+        try {
+            Remove-Variable 'AcceleratorCommandSuccess' -Scope Global
+        } catch {
+            # Do nothing
+        }
     }
 }

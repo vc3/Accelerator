@@ -6,12 +6,9 @@
 		<authors>Matt Hooper, Bryan Matthews</authors>
 		<description>Zoom!</description>
 		<releaseNotes>
-## [0.14.0] - 5/19/2017
+## [0.15.0] - 5/19/2017
 ### Fixed
-- Print error before pausing if `Start-Accelerator` could not be called
-- Silently continue if already elevated when -RunAsAdmin is specified without -UseStart
-### Added
-- Add 'RunAsAdmin' metadata option that validates elevated privileges if set
+- Fix issues with auto-pause on error
 </releaseNotes>
 		<dependencies>
 		</dependencies>
