@@ -1,6 +1,6 @@
 $root = Split-Path $MyInvocation.MyCommand.Path -Parent
 Write-Host "root=$root"
-include '.\Modules\Psake-Choco\tasks.ps1'
+
 properties {
     if ($env:ChocolateyLocal -and (Test-Path $env:ChocolateyLocal)) {
         $outDir = $env:ChocolateyLocal
@@ -28,6 +28,8 @@ properties {
 if (Test-Path "$($root)\psake-local.ps1") {
     include "$($root)\psake-local.ps1"
 }
+
+include '.\Modules\Psake-Choco\psake-tasks.ps1'
 
 properties {
     $acceleratorScript = "$($root)\Accelerator.ps1"
@@ -81,8 +83,8 @@ task Prompt -depends SetAcceleratorPath {
     powershell -Version 2 -NoProfile
 }
 
-task Build -depends BuildChocoPackages
+task Build -depends Choco:BuildPackages
 
-task Deploy -depends DeployChocoPackages
+task Deploy -depends Choco:DeployPackages
 
 task Default -depends Run
