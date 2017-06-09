@@ -64,7 +64,9 @@ if ($useStart) {
                 `$e = `$e.InnerException
             } while (`$e)
 
-            Read-Host 'Press any key to continue...'
+            if (`$parameters.Interactive) {
+                Read-Host 'Press any key to continue...'
+            }
         }
     "
 

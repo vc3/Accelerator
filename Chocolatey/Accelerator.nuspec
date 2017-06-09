@@ -6,9 +6,9 @@
 		<authors>Matt Hooper, Bryan Matthews</authors>
 		<description>Zoom!</description>
 		<releaseNotes>
-## [0.15.0] - 5/19/2017
+## [0.16.0] - 6/9/2017
 ### Fixed
-- Fix issues with auto-pause on error
+- Only pause on error in a new window when in interactive mode
 </releaseNotes>
 		<dependencies>
 		</dependencies>
