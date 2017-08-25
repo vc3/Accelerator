@@ -23,7 +23,11 @@ $ai = 0
 Write-Verbose "Args:`r`n$(($Args | %{ $ai += 1 ; "$($ai): $($_)" }) -join "`r`n")"
 
 Write-Verbose "Parsing unbound arguments..."
-$parsedArgs = $Args | & "$($here)\Scripts\ConvertTo-ParameterHash.ps1" -PositionalParameters $positionalArgs -ErrorAction Stop
+
+# NOTE: Whether the argments are piped to the cmdlet or passed directly will affected
+# the size of the batches in which they are processed, but the result should be the same.
+# $parsedArgs = $Args | & "$($here)\Scripts\ConvertTo-ParameterHash.ps1" -PositionalParameters $positionalArgs -ErrorAction Stop
+$parsedArgs = & "$($here)\Scripts\ConvertTo-ParameterHash.ps1" -ParameterList $Args -PositionalParameters $positionalArgs -ErrorAction Stop
 
 Write-Verbose "Args:`r`n$(($parsedArgs.Keys | foreach { (' ' * 11) + $_ + '=' + $parsedArgs[$_] }) -join "`r`n")"
 
