@@ -5,7 +5,22 @@ $InformationPreference = 'Continue'
 
 $here = Split-Path $script:MyInvocation.MyCommand.Path -Parent
 
+if ($Args -contains '-Verbose') {
+    $VerbosePreference = 'Continue'
+} elseif ($Args -contains '-Verbose:') {
+    $verboseIndex = [Array]::IndexOf($Args, '-Verbose:')
+    if ($Args.Length -gt $verboseIndex) {
+        $verboseValue = $Args[$verboseIndex + 1]
+        if ($verboseValue -eq 'True') {
+            $VerbosePreference = 'Continue'
+        }
+    }
+}
+
 $positionalArgs = @('CommandName')
+
+$ai = 0
+Write-Verbose "Args:`r`n$(($Args | %{ $ai += 1 ; "$($ai): $($_)" }) -join "`r`n")"
 
 Write-Verbose "Parsing unbound arguments..."
 $parsedArgs = $Args | & "$($here)\Scripts\ConvertTo-ParameterHash.ps1" -PositionalParameters $positionalArgs -ErrorAction Stop
