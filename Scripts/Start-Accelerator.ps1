@@ -1,9 +1,8 @@
-[CmdletBinding(DefaultParameterSetName='NonInteractive')]
+[CmdletBinding()]
 param(
     [Parameter(Position=0)]
     [string]$CommandName,
 
-    [Parameter(ParameterSetName='Interactive')]
     [switch]$Interactive,
 
     [string]$WorkingDirectory,
@@ -13,7 +12,6 @@ param(
     [switch]$Confirm,
 
     [Alias('LogFile')]
-    [Parameter(ParameterSetName='NonInteractive')]
     [string]$LogFilePath,
 
     [Hashtable]$CommandParameters
@@ -199,12 +197,14 @@ while ($true) {
             Remove-Module 'Environment' | Out-Null
         }
 
+        if ($LogFilePath) {
+            "Running command '$($commandObject.Title)' at '$([DateTime]::Now)'..." | Out-File $LogFilePath -Append
+        }
+
         if ($Interactive.IsPresent) {
             Write-Host ""
             Write-Host "Running command '$($commandObject.Title)'..."
             Write-Host ""
-        } elseif ($LogFilePath) {
-            "Running command '$($commandObject.Title)' at '$([DateTime]::Now)'..." | Out-File $LogFilePath -Append
         }
 
         # if (-not($Interactive.IsPresent)) {
@@ -216,39 +216,50 @@ while ($true) {
         try {
             $global:AcceleratorInteractive = $Interactive
 
+            $global:AcceleratorLogFilePath = $LogFilePath
+
             $global:AcceleratorRoot = Split-Path $PSScriptRoot -Parent
 
             $PSScriptRoot = Split-Path $commandObject.Path -Parent
 
-            if ($LogFilePath) {
-                & $commandObject.Path @CommandParameters *>> $LogFilePath
-            } else {
-                & $commandObject.Path @CommandParameters
+            & $commandObject.Path @CommandParameters | ForEach-Object {
+                if ($LogFilePath) {
+                    $_ |  Out-File $LogFilePath -Append
+                }
+
+                Write-Output $_
             }
 
             $commandSuccess = $true
         } catch {
-            if ($Interactive.IsPresent) {
-                Write-Host "Error: $($_.Exception.Message)" -ForegroundColor Red
-                if ($_.Exception.StackTrace) {
-                    Write-Host "$($_.Exception.StackTrace)" -ForegroundColor Red
-                }
-            } elseif ($LogFilePath) {
+            if ($LogFilePath) {
                 "Error: $($_.Exception.Message)" | Out-File $LogFilePath -Append
+                # "$($_.Exception | ConvertTo-Json)" | Out-File $LogFilePath -Append
                 if ($_.Exception.StackTrace) {
                     "$($_.Exception.StackTrace)" | Out-File $LogFilePath -Append
                 }
             }
 
+            if ($Interactive.IsPresent) {
+                Write-Host "Error: $($_.Exception.Message)" -ForegroundColor Red
+                if ($_.Exception.StackTrace) {
+                    Write-Host "$($_.Exception.StackTrace)" -ForegroundColor Red
+                }
+            }
+
             throw
         } finally {
-            if ($Interactive.IsPresent) {
-                Write-Host "Command '$($commandObject.Title)' $(if ($commandSuccess) { 'succeeded' } else { 'failed' })."
-            } elseif ($LogFilePath) {
+            if ($LogFilePath) {
                 "Command '$($commandObject.Title)' $(if ($commandSuccess) { 'succeeded' } else { 'failed' }) at '$([DateTime]::Now)'." | Out-File $LogFilePath -Append
             }
 
+            if ($Interactive.IsPresent) {
+                Write-Host "Command '$($commandObject.Title)' $(if ($commandSuccess) { 'succeeded' } else { 'failed' })."
+            }
+
             $global:AcceleratorCommandSuccess = $commandSuccess
+
+            $global:AcceleratorLogFilePath = $null
 
             $global:AcceleratorInteractive = $null
 

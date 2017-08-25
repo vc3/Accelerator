@@ -42,6 +42,10 @@ function Write-Information {
         & $writeWarning "Unable to write informational message to the event log: $($_.Exception.Message)."
     }
 
+    if ($AcceleratorLogFilePath) {
+        "$(($MessageData | Out-String).Trim())" | Out-File $AcceleratorLogFilePath -Append
+    }
+
 	# Call built-in 'Write-Information' cmdlet if available (PSv5).
 	if ($writeInformation) {
 		& $writeInformation @PSBoundParameters
@@ -91,6 +95,10 @@ function Write-Warning {
         Write-EventLog -LogName 'Application' -Source 'Accelerator' -EntryType 'Warning' -EventId $eventId -Message ($eventMessage | Out-String) -Category $eventCategory
     } catch {
         & $writeWarning "Unable to write warning message to the event log: $($_.Exception.Message)."
+    }
+
+    if ($AcceleratorLogFilePath) {
+        "WARNING: $Message" | Out-File $AcceleratorLogFilePath -Append
     }
 
 	& $writeWarning @PSBoundParameters
@@ -216,7 +224,7 @@ function Write-Error {
                 }
 
                 if (-not($Message)) {
-                    $message = $ErrorRecord.Exception.Message
+                    $message = $exception.Message
                 }
             }
         }
@@ -305,6 +313,18 @@ function Write-Error {
         Write-EventLog -LogName 'Application' -Source 'Accelerator' -EntryType 'Error' -EventId $eventId -Message ($eventMessage | Out-String) -Category $eventCategory
     } catch {
         & $writeWarning "Unable to write error message to the event log: $($_.Exception.Message)."
+    }
+
+    if ($AcceleratorLogFilePath) {
+        if ($Message) {
+            "ERROR: $Message" | Out-File $AcceleratorLogFilePath -Append
+        } elseif ($Exception) {
+            "ERROR: $($Exception.Message)" | Out-File $AcceleratorLogFilePath -Append
+        } elseif ($ErrorRecord -and $ErrorRecord.Exception) {
+            "ERROR: $($ErrorRecord.Exception.Message)" | Out-File $AcceleratorLogFilePath -Append
+        } else {
+            "ERROR: An unknown error occurred." | Out-File $AcceleratorLogFilePath -Append
+        }
     }
 
 	& $writeError @PSBoundParameters
