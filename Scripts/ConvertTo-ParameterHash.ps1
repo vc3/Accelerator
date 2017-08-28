@@ -73,7 +73,7 @@ process {
                         $parameterReady = $true
                     } else {
                         $i += 1
-                        $parameterValue = $parameterList[$i]
+                        $parameterText = $parameterList[$i]
                         Write-Verbose "Retrieved value '$($parameterValue)' from the next token."
                         $parameterReady = $true
                     }
