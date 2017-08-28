@@ -9,7 +9,7 @@ param(
 
     [Alias('y')]
     [Alias('yes')]
-    [switch]$Confirm,
+    [switch]$SkipConfirmation,
 
     [Alias('LogFile')]
     [string]$LogFilePath,
@@ -148,27 +148,36 @@ while ($true) {
 
         $commandObject = $commandObjects[0]
 
-        if ($option -match '^~.*~$') {
-            Write-Warning "Command '$($commandObject.Title)' $($commandObject.DisabledReason)."
-            if (-not($Confirm.IsPresent) -and -not(Read-Confirmation -Message "Continue anyway?")) {
-                Write-Host ""
-                Write-Host "Select a different command?"
-                Write-Host ""
-                continue
-            }
-        }
-
         if (-not(Test-Path $commandObject.Path)) {
             throw "File '$($commandObject.Path)' doesn't exist."
         }
 
-        Write-Host "`r`n$($commandObject.Title)`r`n$('-' * ($commandObject.Title.Length))`r`n`r`n$($commandObject.Steps)`r`n"
+        if ($option -match '^~.*~$') {
+            Write-Warning "Command '$($commandObject.Title)' $($commandObject.DisabledReason)."
+            if ($Interactive.IsPresent) {
+                if (-not(Read-Confirmation -Message "Continue anyway?")) {
+                    Write-Host ""
+                    Write-Host "Select a different command?"
+                    Write-Host ""
+                    continue
+                }
+            } else {
+                Write-Host ""
+                Write-Host "Command aborted."
+                Write-Host ""
+                $runCommand = $false
+            }
+        }
 
-	    if (-not($Confirm.IsPresent) -and -not(Read-Confirmation -Message "Continue")) {
-            Write-Host ""
-            Write-Host "Command aborted."
-            Write-Host ""
-            $runCommand = $false
+        if ($runCommand) {
+            Write-Host "`r`n$($commandObject.Title)`r`n$('-' * ($commandObject.Title.Length))`r`n`r`n$($commandObject.Steps)`r`n"
+
+            if (-not($SkipConfirmation.IsPresent) -and -not(Read-Confirmation -Message "Continue")) {
+                Write-Host ""
+                Write-Host "Command aborted."
+                Write-Host ""
+                $runCommand = $false
+            }
         }
     } else {
         throw "Command '$($CommandName)' couldn't to be found."
