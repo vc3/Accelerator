@@ -1,6 +1,20 @@
-Invoke command with appropriate arguments
-Custom module loading
-Implement auto-update
+Custom module loading (add to PSModulePath)
+Implement auto-update for "plugin" packages
 Params, duration, etc. in start and stop logging
-Run command window hidden
-Run as admin
+Option to run command window hidden
+Option to run command window minimized
+Publish psake "plugin" for dev workflows
+Commandline option to specify module
+Options to log to other destinations
+Create desktop shortcut?
+Automatic prompting for missing arguments?
+Wiki / documentation for available commands
+Discovery of plugin packages by naming convention
+Don't rely on environment variable?
+Add helpers for credential storage/retrieval
+Space at end of path cause no commands found?
+Implement tab-completion (for PowerShell)
+Required PowerShell version support
+PowerShell version compatibilty layer
+Read-Item with partial match support
+Select command by name or partial name
