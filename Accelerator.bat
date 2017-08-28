@@ -2,10 +2,19 @@
 
 SETLOCAL enableExtensions enableDelayedExpansion
 
+SET here=%~dp0
+
 SET argCount=0
-FOR %%x IN (%*) DO (
-   SET /A argCount+=1
-   SET "argVec[!argCount!]=%%~x"
+
+:: Based on Stack Overflow "Batch files - number of command line arguments"
+:: https://stackoverflow.com/a/1292079/170990
+
+:argLoop
+IF NOT x%1x==xx (
+    SET /A argCount+=1
+    SET "argVec[!argCount!]=%1"
+    SHIFT
+    GOTO :argLoop
 )
 
 set argString=
@@ -22,6 +31,6 @@ FOR /L %%i IN (1,1,%argCount%) DO (
     )
 )
 
-@powershell -NoProfile -ExecutionPolicy Bypass -Command "& '%~dp0\Accelerator.ps1' !argstring!"
+@powershell -NoProfile -ExecutionPolicy Bypass -Command "& '!here!\Accelerator.ps1' !argstring!"
 
 ENDLOCAL
