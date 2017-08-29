@@ -5,6 +5,9 @@ $packageVersion = $env:chocolateyPackageVersion
 $ErrorActionPreference = 'Stop'
 $InformationPreference = 'Continue'
 
+. "$($packagePath)\tools\Helpers\Test-EventLog.ps1"
+. "$($packagePath)\tools\Helpers\Test-EventLogSource.ps1"
+
 "$($packageVersion)" | Out-File "$($packagePath)\content\Accelerator.version" -Encoding UTF8 -Force
 
 if (-not(Test-Path "$($packageFolder)\content\Accelerator.cfg")) {

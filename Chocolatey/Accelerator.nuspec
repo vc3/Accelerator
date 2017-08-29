@@ -6,7 +6,7 @@
 		<authors>Matt Hooper, Bryan Matthews</authors>
 		<description>Zoom!</description>
 		<releaseNotes>
-## [0.17.0] - ...
+## [0.17.1] - 8/29/2017
 ### Changed
 - Rename 'Confirm' to 'SkipConfirmation' to avoid conflict with "ShouldProcess"
 - Attempt early detection of the '-Verbose' switch
@@ -19,8 +19,7 @@
 		</dependencies>
 	</metadata>
 	<files>
-		<file src="tools\chocolateyInstall.ps1" target="tools" />
-		<file src="tools\chocolateyUninstall.ps1" target="tools" />
+		<file src="tools\**" target="tools" />
 		<file src="content\Accelerator.ico" target="content" />
 		<file src="..\ChangeLog.md" target="content" />
 		<file src="..\Accelerator.bat" target="content" />
