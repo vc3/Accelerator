@@ -6,9 +6,14 @@
 		<authors>Matt Hooper, Bryan Matthews</authors>
 		<description>Zoom!</description>
 		<releaseNotes>
-## [0.16.0] - 6/9/2017
+## [0.17.0] - ...
+### Changed
+- Rename 'Confirm' to 'SkipConfirmation' to avoid conflict with "ShouldProcess"
+- Attempt early detection of the '-Verbose' switch
+- Support both '-Interactive' and '-LogFile'
 ### Fixed
-- Only pause on error in a new window when in interactive mode
+- Handle parsing of "-Param:Value" parameters
+- Handle arguments that FOR evaluates as wildcards
 </releaseNotes>
 		<dependencies>
 		</dependencies>
