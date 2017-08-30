@@ -6,7 +6,15 @@
 		<authors>Matt Hooper, Bryan Matthews</authors>
 		<description>Zoom!</description>
 		<releaseNotes>
+## [0.17.2] - 8/29/2017
+### Fixed
+- Fix creation of event log source
+
 ## [0.17.1] - 8/29/2017
+### Fixed
+- Fix install script
+
+## [0.17.0] - 8/29/2017
 ### Changed
 - Rename 'Confirm' to 'SkipConfirmation' to avoid conflict with "ShouldProcess"
 - Attempt early detection of the '-Verbose' switch
