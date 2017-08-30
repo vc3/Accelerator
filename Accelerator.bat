@@ -25,7 +25,11 @@ FOR /L %%i IN (1,1,%argCount%) DO (
 
     :: Check for spaces and surround in double quotes if needed
     if not "x!argVec[%%i]: =!"=="x!argVec[%%i]!" (
-        set argString=!argString!\"!argVec[%%i]!\"
+        if "!argVec[%%i]:~0,1!!argVec[%%i]:~-1,1!"=="""" (
+            set argString=!argString!\"!argVec[%%i]:~1,-1!\"
+        ) else (
+            set argString=!argString!\"!argVec[%%i]!\"
+        )
     ) else (
         set argString=!argString!!argVec[%%i]!
     )

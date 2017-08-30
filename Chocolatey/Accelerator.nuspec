@@ -6,7 +6,11 @@
 		<authors>Matt Hooper, Bryan Matthews</authors>
 		<description>Zoom!</description>
 		<releaseNotes>
-## [0.17.2] - 8/29/2017
+## [0.17.3] - 8/30/2017
+### Fixed
+- Don't double-up quotes around args
+
+## [0.17.2] - 8/30/2017
 ### Fixed
 - Fix creation of event log source
 
