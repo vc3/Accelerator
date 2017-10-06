@@ -55,6 +55,11 @@ function Get-ConfigurationValue {
 
     $filePath = Get-ConfigurationFilePath
 
+    if (-not($filePath)) {
+        Write-Error "Unable to determine configuration file path."
+        return
+    }
+
     $matchedName = $null
     $matchedValue = $null
     $matchedMultiple = $false
@@ -134,6 +139,11 @@ function Set-ConfigurationValue {
     )
 
     $filePath = Get-ConfigurationFilePath
+
+    if (-not($filePath)) {
+        Write-Error "Unable to determine configuration file path."
+        return
+    }
 
     $matchedName = $null
     $matchedMultiple = $false
