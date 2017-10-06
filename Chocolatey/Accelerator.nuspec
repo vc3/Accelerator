@@ -6,26 +6,14 @@
 		<authors>Matt Hooper, Bryan Matthews</authors>
 		<description>Zoom!</description>
 		<releaseNotes>
-## [0.17.3] - 8/30/2017
+## [0.18.0] - 10/6/2017
+### Added
+- Add 'AcceleratorCommandFileName' global variable
+- Add 'Accelerator.Configuration' module
+- Add 'Accelerator.ServiceConnector' module
+- Add 'Accelerator.EmailService' module
 ### Fixed
-- Don't double-up quotes around args
-
-## [0.17.2] - 8/30/2017
-### Fixed
-- Fix creation of event log source
-
-## [0.17.1] - 8/29/2017
-### Fixed
-- Fix install script
-
-## [0.17.0] - 8/29/2017
-### Changed
-- Rename 'Confirm' to 'SkipConfirmation' to avoid conflict with "ShouldProcess"
-- Attempt early detection of the '-Verbose' switch
-- Support both '-Interactive' and '-LogFile'
-### Fixed
-- Handle parsing of "-Param:Value" parameters
-- Handle arguments that FOR evaluates as wildcards
+- Add check for no config file path
 </releaseNotes>
 		<dependencies>
 		</dependencies>
@@ -41,5 +29,8 @@
 		<file src="..\Modules\PowerYaml\**" target="content\Modules\PowerYaml" />
 		<file src="..\Modules\Environment\**" target="content\Modules\Environment" />
 		<file src="..\Modules\Accelerator\**" target="content\Modules\Accelerator" />
+		<file src="..\Modules\Accelerator.Configuration\**" target="content\Modules\Accelerator.Configuration" />
+		<file src="..\Modules\Accelerator.EmailService\**" target="content\Modules\Accelerator.EmailService" />
+		<file src="..\Modules\Accelerator.ServiceConnector\**" target="content\Modules\Accelerator.ServiceConnector" />
 	</files>
 </package>

@@ -229,6 +229,8 @@ while ($true) {
 
             $global:AcceleratorRoot = Split-Path $PSScriptRoot -Parent
 
+            $global:AcceleratorCommandFileName = $commandObject.Path
+
             $PSScriptRoot = Split-Path $commandObject.Path -Parent
 
             & $commandObject.Path @CommandParameters | ForEach-Object {
@@ -273,6 +275,8 @@ while ($true) {
             $global:AcceleratorInteractive = $null
 
             $global:AcceleratorRoot = $null
+
+            $global:AcceleratorCommandFileName = $null
 
             $PSScriptRoot = Split-Path $script:MyInvocation.MyCommand.Path -Parent
         }

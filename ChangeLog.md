@@ -4,6 +4,40 @@ All notable changes to this project will be documented in [this file](http://kee
 
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.18.0] - 10/6/2017
+### Added
+- Add 'AcceleratorCommandFileName' global variable
+- Add 'Accelerator.Configuration' module
+- Add 'Accelerator.ServiceConnector' module
+- Add 'Accelerator.EmailService' module
+### Fixed
+- Add check for no config file path
+
+## [0.17.3] - 8/30/2017
+### Fixed
+- Don't double-up quotes around args
+
+## [0.17.2] - 8/30/2017
+### Fixed
+- Fix creation of event log source
+
+## [0.17.1] - 8/29/2017
+### Fixed
+- Fix install script
+
+## [0.17.0] - 8/29/2017
+### Changed
+- Rename 'Confirm' to 'SkipConfirmation' to avoid conflict with "ShouldProcess"
+- Attempt early detection of the '-Verbose' switch
+- Support both '-Interactive' and '-LogFile'
+### Fixed
+- Handle parsing of "-Param:Value" parameters
+- Handle arguments that FOR evaluates as wildcards
+
+## [0.16.0] - 6/9/2017
+### Fixed
+- Only pause on error in a new window when in interactive mode
+
 ## [0.15.0] - 5/19/2017
 ### Fixed
 - Fix issues with auto-pause on error
