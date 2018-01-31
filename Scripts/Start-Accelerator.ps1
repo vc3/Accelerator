@@ -87,10 +87,10 @@ if ($CommandName) {
     }
 }
 
-# Run commands
-while ($true) {
-    $runCommand = $true
+$runCommand = $true
 
+# Run commands
+while ($runCommand) {
     if ($commandObjects.Count -eq 1) {
         $commandObject = $commandObjects[0]
     } elseif ($Interactive.IsPresent) {
@@ -233,6 +233,10 @@ while ($true) {
 
             $PSScriptRoot = Split-Path $commandObject.Path -Parent
 
+            # Temporarily set to false to avoid infinite loop if a script
+            # calls 'continue' from within an error handler
+            $runCommand = $false
+
             & $commandObject.Path @CommandParameters | ForEach-Object {
                 if ($LogFilePath) {
                     $_ |  Out-File $LogFilePath -Append
@@ -286,6 +290,9 @@ while ($true) {
         }
     }
 
+    # Reset to true after the script exits properly
+    $runCommand = $true
+    
     if (($CommandName -and $commandObject) -or -not($Interactive.IsPresent)) {
         break
     }
@@ -295,4 +302,8 @@ while ($true) {
     if (-not(Read-Confirmation -Message "Would you like to run another command?")) {
         break
     }
+}
+
+if (-not($runCommand)) {
+    Write-Warning "Script exited abnormally, likely due to inappropriate use of the `"continue`" or `"break`" keyword."
 }

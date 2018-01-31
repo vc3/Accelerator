@@ -6,14 +6,9 @@
 		<authors>Matt Hooper, Bryan Matthews</authors>
 		<description>Zoom!</description>
 		<releaseNotes>
-## [0.18.0] - 10/6/2017
+## [0.19.0] - 1/31/2018
 ### Added
-- Add 'AcceleratorCommandFileName' global variable
-- Add 'Accelerator.Configuration' module
-- Add 'Accelerator.ServiceConnector' module
-- Add 'Accelerator.EmailService' module
-### Fixed
-- Add check for no config file path
+- Implement detection of abnormal script exit
 </releaseNotes>
 		<dependencies>
 		</dependencies>
